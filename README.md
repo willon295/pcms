@@ -11,6 +11,13 @@
 2. 创建分支，配置权限
 3. pre 分之唯一，代表预发环境
 4. master 为线上环境分支
+5. 配置人员信息
+6. 提供API接口
+
+### 权限配置
+
+1. 仅 root 用户可操作 master 分支
+2. 仅 root 用户可操作 pre 分支
 
 ## pcms-web
 
@@ -27,6 +34,12 @@
 4. 项目环境测试通过: 拥有进入预发环境权限
 5. 预发审核：  进行权限检查， 是否其他项目占用预发， 如果是， 需要审核，审核通过后拥有 `pre` 分之操作权限 
 6. 预发部署： 合并 `项目环境分支` 代码到 `pre`  分支， 对pre分支打包， 部署
+
+### 涉及技术
+
+后端技术： Spring Boot、Thymleaf、Mybatis、Mysql、Redis
+
+前端技术： Html、Css、JavaScript、Vue、Bootstrap
 
 ## install-conf-server
 
@@ -59,8 +72,12 @@
    - 一切就绪之后返回 `success`
 3. `pcms-web` 接收到返回success，在各宿主机开始安装Kvm
 4. 接收来自KVM的完成请求
-
 5. install-conf-server 释放redis锁
+
+### 涉及技术
+
+后端技术： Spring Boot 、Mybatis、Mysql、Redis、Maven、Git
+运维： Shell、Kvm、Kickstart、镜像文件ISO定制
 
 ## 服务器、KVM自动化相关
 
