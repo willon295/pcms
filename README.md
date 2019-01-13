@@ -157,9 +157,9 @@
 
 | 服务器              | ip        | 备注                |
 | ------------------- | --------- | ------------------- |
-| pcms-gitlab         | 10.0.0.11 | root/sdfsdfsdf      |
 | install-conf-server | 10.0.0.10 | kvm安装前配置服务器 |
-| pack-deploy         | 10.0.0.12 | 打包部署服务器      |
-| pcms-web            | 10.0.0.13 | 管理后台            |
-|                     |           |                     |
+| pcms-gitlab         | 10.0.0.11 | gitlab服务器：root/sdfsdfsdf      |
+| gitlab-api          | 10.0.0.12 |  gitlab-api服务  |
+| pack-deploy         | 10.0.0.13 | 打包部署服务器      |
+| pcms-web            | 10.0.0.14 | 管理后台            |
 |                     |           |                     |
