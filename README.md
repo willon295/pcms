@@ -3,16 +3,14 @@
 
 # 项目架构
 
-## pcms-gitlab
+## gitlab-api
 
 ### 主要功能
 
-1. 托管项目
-2. 创建分支，配置权限
+1. 提供gitlab api访问
+2. 创建分支，配置用户权限
 3. pre 分之唯一，代表预发环境
 4. master 为线上环境分支
-5. 配置人员信息
-6. 提供API接口
 
 ### 权限配置
 
@@ -115,7 +113,7 @@
 1. `JAVA_HOME` 为 `/opt/lib/jdk8/`
 2. `M2_HOME` 为 `/opt/lib/maven3`
 3. HTTP根目录 ： `/var/www/html/`
-4. KVM相关文件： `/opt/kvm/`
+4. KVM相关脚本文件： `/opt/kvm/bin/`
 5. KVM虚拟磁盘存放目录： `/opt/kvm/disk/`
 6. KVM需要的ISO文件存放目录： `/opt/kvm/iso/`
 7. app运行目录： `/opt/app/{project-name}/`
