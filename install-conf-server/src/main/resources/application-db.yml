@@ -1,0 +1,16 @@
+spring:
+  profiles: dev
+  redis:
+    host: localhost
+---
+spring:
+  profiles: pre
+  redis:
+    host: localhost
+---
+spring:
+  profiles: publish
+  redis:
+    host: localhost
+
+

@@ -1,0 +1,31 @@
+spring:
+  profiles: dev
+
+generate:
+  filePath:
+    ip: /var/www/html/ip
+    hostname: /var/www/html/hostname
+    originIfcfg: /var/www/html/ifcfg
+    newIfcfg: /var/www/html/ifcfg-eth0
+
+
+---
+spring:
+  profiles: pre
+
+generate:
+  filePath:
+    ip: /var/www/html/ip
+    hostname: /var/www/html/hostname
+    originIfcfg: /var/www/html/ifcfg
+    newIfcfg: /var/www/html/ifcfg-eth0
+
+---
+spring:
+  profiles: publish
+generate:
+  filePath:
+    ip: /var/www/html/ip
+    hostname: /var/www/html/hostname
+    originIfcfg: /var/www/html/ifcfg
+    newIfcfg: /var/www/html/ifcfg-eth0
