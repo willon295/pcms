@@ -3,10 +3,10 @@ spring:
 
 generate:
   filePath:
-    ip: /var/www/html/ip
-    hostname: /var/www/html/hostname
-    originIfcfg: /var/www/html/ifcfg
-    newIfcfg: /var/www/html/ifcfg-eth0
+    ip: /var/ftp/ip
+    hostname: /var/ftp/hostname
+    originIfcfg: /var/ftp/ifcfg
+    newIfcfg: /var/ftp/ifcfg-eth0
 
 
 ---
@@ -15,17 +15,17 @@ spring:
 
 generate:
   filePath:
-    ip: /var/www/html/ip
-    hostname: /var/www/html/hostname
-    originIfcfg: /var/www/html/ifcfg
-    newIfcfg: /var/www/html/ifcfg-eth0
+    ip: /var/ftp/ip
+    hostname: /var/ftp/hostname
+    originIfcfg: /var/ftp/ifcfg
+    newIfcfg: /var/ftp/ifcfg-eth0
 
 ---
 spring:
   profiles: publish
 generate:
   filePath:
-    ip: /var/www/html/ip
-    hostname: /var/www/html/hostname
-    originIfcfg: /var/www/html/ifcfg
-    newIfcfg: /var/www/html/ifcfg-eth0
+    ip: /var/ftp/ip
+    hostname: /var/ftp/hostname
+    originIfcfg: /var/ftp/ifcfg
+    newIfcfg: /var/ftp/ifcfg-eth0
