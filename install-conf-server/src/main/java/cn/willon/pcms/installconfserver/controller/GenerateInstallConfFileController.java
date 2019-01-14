@@ -26,13 +26,20 @@ public class GenerateInstallConfFileController {
     @Resource
     private GenerateFileService generateFileService;
 
+
+    @GetMapping("/tryLock")
+    public boolean tryLock() {
+        return redisService.tryLock();
+    }
+
+
     /**
      * 生成新的配置文件
      *
      * @param hostname 主机名称
      * @return 是否成功生成主机配置
      */
-    @PostMapping("/generate/{hostname}")
+    @GetMapping("/generate/{hostname}")
     public Boolean generate(@PathVariable(name = "hostname") String hostname) {
         try {
             boolean lock = redisService.lock(hostname);

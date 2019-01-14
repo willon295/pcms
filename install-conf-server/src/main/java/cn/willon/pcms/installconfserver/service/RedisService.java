@@ -3,6 +3,7 @@ package cn.willon.pcms.installconfserver.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -20,6 +21,18 @@ public class RedisService {
     private static final String INSTALL_LOCK = "INSTALL_LOCK";
     private static final Integer EXPIRE_TIME = 10 * 60;
 
+
+    /**
+     * 尝试获取锁
+     *
+     * @return 是否得到锁
+     */
+    public synchronized boolean tryLock() {
+        Jedis jedis = jedis();
+        String s = jedis.get(INSTALL_LOCK);
+        return StringUtils.isEmpty(s);
+    }
+
     public synchronized boolean lock(String hostname) {
         Jedis jedis = jedis();
         Long result = jedis.setnx(INSTALL_LOCK, hostname);
@@ -31,7 +44,7 @@ public class RedisService {
         return true;
     }
 
-    public  synchronized void unlock() {
+    public synchronized void unlock() {
         Jedis jedis = jedis();
         jedis.del(INSTALL_LOCK);
     }
