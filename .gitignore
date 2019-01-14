@@ -1,4 +1,4 @@
 .idea/
 *.iml
 */target/
-*/*.tar.gz
+*.tar.gz
