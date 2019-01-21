@@ -1,4 +1,5 @@
 server:
   port: 8080
 gitlab:
-  accessToken: MaFgeigFcwZ6uwpdaVS4
+  host: http://10.0.0.11
+  privateToken: umxcEUL-RByc9nGvoBeU
