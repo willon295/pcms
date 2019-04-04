@@ -1,6 +1,15 @@
 # PCMS（Project Changes  Management System）
 项目变更管理系统
 
+
+版本定义
+
+|软件|版本|
+|---|---|
+|JDK|1.8.0_212|
+|spring boot|2.0.9.RELEASE|
+|Spring Cloud|Finchley.SR2|
+
 # 1. 项目架构
 
 ## 1.1 gitlab-api

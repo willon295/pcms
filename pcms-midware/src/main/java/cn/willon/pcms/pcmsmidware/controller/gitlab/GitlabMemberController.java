@@ -1,4 +1,4 @@
-package cn.willon.pcms.gitlabapi.controller;
+package cn.willon.pcms.pcmsmidware.controller.gitlab;
 
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabProjectMember;
@@ -26,7 +26,7 @@ public class GitlabMemberController {
     @GetMapping("/members")
     public List members(String projectId) {
 
-        List<GitlabProjectMember> projectMembers = null;
+        List<GitlabProjectMember> projectMembers;
         try {
             projectMembers = gitlabAPI.getProjectMembers(projectId);
         } catch (IOException e) {

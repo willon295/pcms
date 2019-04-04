@@ -1,0 +1,22 @@
+---
+spring:
+  profiles:
+    active: dev
+server:
+  port: 8080
+kvm:
+  binPath: /opt/kvm/bin/kvm.sh
+  cmd:
+    install: install
+    restart: restart
+    delete: delete
+---
+spring:
+  profiles:
+    active: publish
+kvm:
+  binPath: /opt/kvm/bin/kvm.sh
+  cmd:
+    install: install
+    restart: restart
+    delete: delete

@@ -1,8 +1,13 @@
-# pcms-web设计与实现
+# pcms-midware 设计与实现
+
+主要功能： 
+
+1. 封装Gitlab相关访问的API
+2. 传输 `static-web` 工程的数据
+3. 封装KVM相关操作API
+4. 封装人员信息相关API
 
 # 变更相关
-
-
 
 变更属性： 
 

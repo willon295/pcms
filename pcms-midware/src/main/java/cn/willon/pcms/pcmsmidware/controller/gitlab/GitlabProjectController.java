@@ -1,4 +1,4 @@
-package cn.willon.pcms.gitlabapi.controller;
+package cn.willon.pcms.pcmsmidware.controller.gitlab;
 
 import org.gitlab.api.GitlabAPI;
 import org.springframework.web.bind.annotation.GetMapping;

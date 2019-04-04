@@ -1,8 +1,0 @@
-server:
-  port: 8080
-kvm:
-  binPath: /opt/kvm/bin/kvm.sh
-  cmd:
-    install: install
-    restart: restart
-    delete: delete

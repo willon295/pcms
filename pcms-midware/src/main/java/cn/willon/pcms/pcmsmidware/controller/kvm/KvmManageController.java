@@ -1,4 +1,4 @@
-package cn.willon.pcms.kvmapi.controller;
+package cn.willon.pcms.pcmsmidware.controller.kvm;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;

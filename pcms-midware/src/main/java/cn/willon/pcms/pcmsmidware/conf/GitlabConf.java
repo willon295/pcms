@@ -1,4 +1,4 @@
-package cn.willon.pcms.gitlabapi.conf;
+package cn.willon.pcms.pcmsmidware.conf;
 
 import lombok.Data;
 import org.gitlab.api.AuthMethod;
