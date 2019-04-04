@@ -1,4 +1,4 @@
 spring:
   profiles:
     active: @spring.profiles.active@
-    include: path,db
+    include: path,db,eureka

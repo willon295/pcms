@@ -2,8 +2,6 @@
 spring:
   profiles:
     active: dev
-server:
-  port: 8080
 gitlab:
   host: http://10.0.0.11
   privateToken: umxcEUL-RByc9nGvoBeU

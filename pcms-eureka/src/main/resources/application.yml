@@ -1,0 +1,15 @@
+server:
+  port: 8761
+spring:
+  application:
+    name: pcms-eureka
+eureka:
+  instance:
+    #指定主机名
+    hostname: pcms-eureka
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      #指定其他注册中心地址
+      defaultZone: http://10.0.0.9:8761/eureka/

@@ -1,4 +1,4 @@
 spring:
   profiles:
     active: @spring.profiles.active@
-    include: gitlab,kvm
+    include: gitlab,kvm,eureka

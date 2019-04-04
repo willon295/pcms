@@ -5,9 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.willon.pcms</groupId>
-    <artifactId>install-conf-server</artifactId>
+    <artifactId>pcms-eureka</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -28,29 +29,11 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.49</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.22</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
     </dependencies>
 
-    <!--SpringCloud-->
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -62,8 +45,11 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <!--多环境配置-->
     <profiles>
+
+        <!--项目环境， 默认使用-->
         <profile>
             <id>dev</id>
             <properties>
@@ -73,12 +59,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
-        <profile>
-            <id>pre</id>
-            <properties>
-                <spring.profiles.active>pre</spring.profiles.active>
-            </properties>
-        </profile>
+
+        <!--线上环境-->
         <profile>
             <id>publish</id>
             <properties>
@@ -86,8 +68,9 @@
             </properties>
         </profile>
     </profiles>
+
     <build>
-        <finalName>install-conf-server</finalName>
+        <finalName>pcms-eureka</finalName>
         <plugins>
             <!--jar包插件-->
             <plugin>
@@ -98,7 +81,7 @@
                     <archive>
                         <!--设置程序启动： 入口类，加载lib下jar包 ，加载conf配置文件-->
                         <manifest>
-                            <mainClass>cn.willon.pcms.installconfserver.InstallConfServerApplication</mainClass>
+                            <mainClass>cn.willon.pcms.pcmseureka.PcmsEurekaApplication</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                         </manifest>
@@ -128,7 +111,7 @@
                 <version>2.6</version>
                 <configuration>
                     <descriptor>src/main/assembly/assembly.xml</descriptor>
-                    <finalName>install-conf-server</finalName>
+                    <finalName>pcms-eureka</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <outputDirectory>./</outputDirectory>
                     <tarLongFileMode>posix</tarLongFileMode>

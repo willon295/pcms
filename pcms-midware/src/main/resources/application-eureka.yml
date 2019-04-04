@@ -1,0 +1,19 @@
+---
+spring:
+  profiles:
+    active: dev
+  application:
+    name: pcms-midware-test
+eureka:
+  client:
+    service-url:
+      # 指定多个中心的地址
+      defaultZone: http://10.0.0.9:8761/eureka/
+  instance:
+    hostname: pcms-midware-test
+    prefer-ip-address: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

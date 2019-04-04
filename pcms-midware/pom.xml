@@ -25,16 +25,19 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -49,7 +52,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.gitlab</groupId>
             <artifactId>java-gitlab-api</artifactId>
@@ -95,7 +97,7 @@
     </profiles>
 
     <build>
-        <finalName>gitlab-api</finalName>
+        <finalName>pcms-midware</finalName>
         <plugins>
             <!--jar包插件-->
             <plugin>
@@ -136,7 +138,7 @@
                 <version>2.6</version>
                 <configuration>
                     <descriptor>src/main/assembly/assembly.xml</descriptor>
-                    <finalName>gitlab-api</finalName>
+                    <finalName>pcms-midware</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <outputDirectory>./</outputDirectory>
                     <tarLongFileMode>posix</tarLongFileMode>
