@@ -2,7 +2,6 @@ package cn.willon.pcms.pcmsmidware;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 /**
  * PcmsMidwareApplication
@@ -10,7 +9,6 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
  * @author Willon
  * @since 2019-04-04
  */
-@EnableEurekaClient
 @SpringBootApplication
 public class PcmsMidwareApplication {
 

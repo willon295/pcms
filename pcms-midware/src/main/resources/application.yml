@@ -1,4 +1,6 @@
 spring:
   profiles:
     active: @spring.profiles.active@
-    include: gitlab,kvm,eureka
+    include: db,gitlab,kvm
+server:
+  port: 8080
