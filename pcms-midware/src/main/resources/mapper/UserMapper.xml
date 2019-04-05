@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.willon.pcms.pcmsmidware.mapper.UserMapper">
+
+    <sql id="allUserCol">
+        user_id,
+        username,
+        password,
+        real_name,
+        position,
+        is_valid,
+        attribute
+    </sql>
+
+    <resultMap id="userWithChangesResultMap" type="cn.willon.pcms.pcmsmidware.domain.bean.User">
+        <id column="user_id" property="userId"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="real_name" property="realName"/>
+        <result column="position" property="position"/>
+        <result column="attribute" property="attribute"/>
+    </resultMap>
+
+    <insert id="save" keyColumn="user_id" useGeneratedKeys="true" keyProperty="userId" parameterType="cn.willon.pcms.pcmsmidware.domain.bean.User">
+        insert into user (username, real_name, password, position)
+        values (#{username}, #{realName}, #{password}, #{position});
+    </insert>
+
+    <select id="findAll" resultMap="userWithChangesResultMap">
+        select
+        <include refid="allUserCol"/>
+        from user;
+    </select>
+
+    <select id="findByUserId" resultMap="userWithChangesResultMap">
+        select u.user_id,
+               u.username,
+               u.real_name,
+               u.position,
+               u.attribute,
+               u.is_valid,
+               c.change_id,
+               c.change_name,
+               c.branch_name,
+               c.attribute,
+               c.is_valid
+        from user u
+                 left join user_changes uc on u.user_id = uc.user_id
+                 left join changes c on uc.change_id = c.change_id
+        where u.user_id = #{userId}
+          and u.is_valid = 1;
+    </select>
+</mapper>

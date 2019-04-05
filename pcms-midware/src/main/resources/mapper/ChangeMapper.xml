@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.willon.pcms.pcmsmidware.mapper.ChangeMapper">
+
+    <sql id="allChangeCol">
+        change_id,
+        change_name,
+        branch_name,
+        attribute,
+        is_valid
+    </sql>
+
+    <resultMap id="allColChangeResultMap" type="cn.willon.pcms.pcmsmidware.domain.bean.Changes">
+        <id property="changeId" column="change_id"/>
+        <result column="change_name" property="changeName"/>
+        <result column="branch_name" property="branchName"/>
+        <result column="attribute" property="attribute"/>
+        <result column="is_valid" property="isValid"/>
+    </resultMap>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="changeId"
+            parameterType="cn.willon.pcms.pcmsmidware.domain.bean.Changes">
+        insert into changes (change_name, branch_name)
+        values (#{changeName}, #{branchName});
+    </insert>
+
+    <select id="findByChangeId" resultMap="allColChangeResultMap">
+        select
+        <include refid="allChangeCol"/>
+        from changes
+        where change_id = #{changeId} and is_valid=1
+    </select>
+
+    <select id="findAll" resultMap="allColChangeResultMap">
+        select
+        <include refid="allChangeCol"/>
+        from changes;
+    </select>
+</mapper>
