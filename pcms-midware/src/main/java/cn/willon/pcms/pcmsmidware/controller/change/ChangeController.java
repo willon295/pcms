@@ -5,6 +5,7 @@ import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
 import cn.willon.pcms.pcmsmidware.service.ChangeService;
 import cn.willon.pcms.pcmsmidware.service.KvmService;
 import com.google.common.collect.Lists;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import java.util.List;
  * @author Willon
  * @since 2019-04-06
  */
+@CrossOrigin(allowedHeaders = "*"  ,maxAge = 3600)
 @RestController
 public class ChangeController {
 

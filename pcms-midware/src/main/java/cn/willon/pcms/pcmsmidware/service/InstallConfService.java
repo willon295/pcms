@@ -17,9 +17,9 @@ public interface InstallConfService {
 
 
     @GetMapping("/tryLock")
-    public boolean tryLock();
+    boolean tryLock();
 
     @GetMapping("/generate/{hostname}")
-    public Boolean generate(@PathVariable(name = "hostname") String hostname);
+    Boolean generate(@PathVariable(name = "hostname") String hostname);
 
 }

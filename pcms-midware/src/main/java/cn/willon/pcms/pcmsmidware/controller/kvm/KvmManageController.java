@@ -12,6 +12,7 @@ import javax.annotation.Resource;
  * @author Willon
  * @since 2019-01-13
  */
+@CrossOrigin(allowedHeaders = "*", maxAge = 3600)
 @RestController
 public class KvmManageController {
 
@@ -69,7 +70,9 @@ public class KvmManageController {
     @PutMapping("/kvm")
     public void finishCreateKvm(@RequestParam(name = "hostname") String hostname, @RequestParam(name = "ip") String ip) {
         kvmService.finishCreateKvm(hostname, ip);
-        kvmBashExecutor.startKvm(hostname);
+        if (kvmService.isCreateKvmSuccess(hostname)) {
+            kvmBashExecutor.startKvm(hostname);
+        }
     }
 
 
