@@ -2,6 +2,10 @@
 spring:
   profiles:
     active: dev
+  application:
+    name: install-conf-server
 eureka:
   client:
-    eureka-server-port:
+    service-url:
+      defaultZone: http://192.168.43.171:8761/eureka/
+---

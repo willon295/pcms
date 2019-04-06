@@ -1,6 +1,7 @@
 package cn.willon.pcms.installconfserver.controller;
 
 import cn.willon.pcms.installconfserver.service.GenerateFileService;
+import cn.willon.pcms.installconfserver.service.KvmService;
 import cn.willon.pcms.installconfserver.service.RedisService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,9 @@ public class GenerateInstallConfFileController {
 
     @Resource
     private RedisService redisService;
+
+    @Resource
+    private KvmService kvmService;
 
     @Resource
     private GenerateFileService generateFileService;
@@ -59,6 +63,12 @@ public class GenerateInstallConfFileController {
      */
     @GetMapping("/finish")
     public void finish() {
+
+        // 更新
+        String hostname = generateFileService.readNewHostname();
+        String ip = generateFileService.readNewIp();
+        kvmService.updateKvmIp(hostname, ip);
+        // 释放锁
         redisService.unlock();
     }
 

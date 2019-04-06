@@ -1,10 +1,12 @@
 package cn.willon.pcms.pcmsmidware.domain.bean;
 
+import cn.willon.pcms.pcmsmidware.mapper.domain.KvmUser;
 import lombok.Data;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Willon
@@ -48,7 +50,6 @@ public class Kvm implements Serializable {
      * 对应ip
      * isNullAble:1
      */
-    @NotBlank(message = "ip 不能为空")
     private String ip;
 
     /**
@@ -87,5 +88,8 @@ public class Kvm implements Serializable {
      */
     private Integer isValid = 1;
 
-
+    /**
+     * 拥有变更查看和操作权限的用户
+     */
+    private List<KvmUser> users;
 }

@@ -32,6 +32,26 @@
         <result column="is_valid" property="isValid"/>
     </resultMap>
 
+    <resultMap id="kvmWithUserResultMap" type="cn.willon.pcms.pcmsmidware.domain.bean.Kvm">
+        <id column="kvm_id" property="kvmId"/>
+        <result column="hostname" property="hostname"/>
+        <result column="project_id" property="projectId"/>
+        <result column="project_name" property="projectName"/>
+        <result column="ip" property="ip"/>
+        <result column="create_date" property="createDate"/>
+        <result column="expire_date" property="expireDate"/>
+        <result column="dev_status" property="devStatus"/>
+        <result column="change_id" property="changeId"/>
+        <result column="attribute" property="attribute"/>
+        <result column="is_valid" property="isValid"/>
+        <collection property="users" ofType="cn.willon.pcms.pcmsmidware.mapper.domain.KvmUser">
+            <result column="user_id" property="userId"/>
+            <result column="username" property="username"/>
+            <result column="real_name" property="realName"/>
+            <result column="permission" property="permission"/>
+        </collection>
+
+    </resultMap>
 
     <insert id="save" keyColumn="kvm_id" useGeneratedKeys="true" keyProperty="kvmId"
             parameterType="cn.willon.pcms.pcmsmidware.domain.bean.Kvm">
@@ -66,4 +86,45 @@
         <include refid="allColKvm"/>
         from kvm where is_valid = 1;
     </select>
+
+    <insert id="saveUserKvm">
+        insert into user_kvm (kvm_id, user_id, permission)
+        values (#{kvmId}, #{userId}, #{permission});
+    </insert>
+
+    <select id="findKvmWithUser" resultMap="kvmWithUserResultMap">
+        select k.kvm_id,
+               k.hostname,
+               k.change_id,
+               k.create_date,
+               k.expire_date,
+               k.ip,
+               k.project_id,
+               k.project_name,
+               k.attribute,
+               k.dev_status,
+               uk.permission,
+               u.username,
+               u.real_name
+        from kvm k
+                 left join user_kvm uk on k.kvm_id = uk.kvm_id
+                 left join user u on u.user_id = uk.user_id
+        where k.kvm_id = #{kvmId}
+          and k.is_valid = 1;
+    </select>
+
+
+    <update id="updateKvmIpByHostname">
+        update kvm
+        set ip = #{ip}
+        where hostname = #{hostname};
+    </update>
+
+    <update id="updateKvmDevStatusByHostname">
+
+        update kvm
+        set dev_status = #{devStatus}
+        where hostname = #{hostname};
+
+    </update>
 </mapper>

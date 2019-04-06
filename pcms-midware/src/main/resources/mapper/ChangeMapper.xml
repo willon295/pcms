@@ -19,17 +19,28 @@
         <result column="is_valid" property="isValid"/>
     </resultMap>
 
+    <resultMap id="changeWithKvmIdResultMap" type="cn.willon.pcms.pcmsmidware.domain.bean.Changes">
+        <id property="changeId" column="change_id"/>
+        <result column="change_name" property="changeName"/>
+        <result column="branch_name" property="branchName"/>
+        <result column="attribute" property="attribute"/>
+        <collection property="kvmIds" ofType="java.lang.Integer">
+            <id column="kvm_id" property="kvmId"/>
+        </collection>
+    </resultMap>
+
     <insert id="save" useGeneratedKeys="true" keyProperty="changeId"
             parameterType="cn.willon.pcms.pcmsmidware.domain.bean.Changes">
         insert into changes (change_name, branch_name)
         values (#{changeName}, #{branchName});
     </insert>
 
-    <select id="findByChangeId" resultMap="allColChangeResultMap">
-        select
-        <include refid="allChangeCol"/>
-        from changes
-        where change_id = #{changeId} and is_valid=1
+    <select id="findByChangeId" resultMap="changeWithKvmIdResultMap">
+        select c.change_id, c.change_name, c.branch_name, c.attribute, k.kvm_id
+        from changes c
+                 left join kvm k on c.change_id = k.change_id
+        where c.change_id = #{changeId}
+          and c.is_valid = 1
     </select>
 
     <select id="findAll" resultMap="allColChangeResultMap">
@@ -37,4 +48,9 @@
         <include refid="allChangeCol"/>
         from changes;
     </select>
+
+    <insert id="saveUserChange" parameterType="cn.willon.pcms.pcmsmidware.mapper.condition.SaveUserChangeCondition">
+        insert into user_changes (user_id, change_id, is_owner)
+        VALUES (#{userId}, #{changeId}, #{isOwner})
+    </insert>
 </mapper>

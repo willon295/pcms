@@ -12,9 +12,16 @@ import java.util.List;
  */
 public interface UserMapper {
 
+    /**
+     * 通过用户id查找用户信息， 会查询用户所有变更信息
+     *
+     * @param userId 用户id
+     * @return 用户信息，包含变更列表
+     */
     User findByUserId(Integer userId);
 
     List<User> findAll();
 
     void save(User user);
+
 }

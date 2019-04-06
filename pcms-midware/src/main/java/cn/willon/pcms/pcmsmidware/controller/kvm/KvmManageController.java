@@ -1,10 +1,10 @@
 package cn.willon.pcms.pcmsmidware.controller.kvm;
 
+import cn.willon.pcms.pcmsmidware.service.KvmService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -29,6 +29,9 @@ public class KvmManageController {
 
     @Value("${kvm.cmd.delete}")
     private String deleteCmd;
+
+    @Resource
+    private KvmService kvmService;
 
     @GetMapping("/install/{hostname}")
     public boolean install(@PathVariable(name = "hostname") String hostname) {
@@ -55,11 +58,21 @@ public class KvmManageController {
         processBuilder.command(cmds);
         try {
             processBuilder.start();
-            System.out.println(cmds.toString());
+            System.out.println();
             return true;
         } catch (IOException e) {
             return false;
         }
+    }
+
+    /**
+     * 修改主机ip
+     * @param hostname 主机名称
+     * @param ip ip
+     */
+    @PutMapping("/kvm")
+    public void updateKvmIp(@RequestParam(name = "hostname") String hostname, @RequestParam(name = "ip") String ip) {
+        kvmService.finishCreateKvm(hostname,ip);
     }
 
 

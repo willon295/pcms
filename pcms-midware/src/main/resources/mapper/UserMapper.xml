@@ -20,14 +20,32 @@
         <result column="real_name" property="realName"/>
         <result column="position" property="position"/>
         <result column="attribute" property="attribute"/>
+        <collection property="changes" ofType="cn.willon.pcms.pcmsmidware.domain.bean.Changes">
+            <id property="changeId" column="change_id"/>
+            <result column="change_name" property="changeName"/>
+            <result column="branch_name" property="branchName"/>
+            <result column="attribute" property="attribute"/>
+            <result column="is_valid" property="isValid"/>
+        </collection>
     </resultMap>
 
-    <insert id="save" keyColumn="user_id" useGeneratedKeys="true" keyProperty="userId" parameterType="cn.willon.pcms.pcmsmidware.domain.bean.User">
+    <resultMap id="userResultMap" type="cn.willon.pcms.pcmsmidware.domain.bean.User">
+        <id column="user_id" property="userId"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="real_name" property="realName"/>
+        <result column="position" property="position"/>
+        <result column="attribute" property="attribute"/>
+        <result column="is_valid" property="isValid"/>
+    </resultMap>
+
+    <insert id="save" keyColumn="user_id" useGeneratedKeys="true" keyProperty="userId"
+            parameterType="cn.willon.pcms.pcmsmidware.domain.bean.User">
         insert into user (username, real_name, password, position)
         values (#{username}, #{realName}, #{password}, #{position});
     </insert>
 
-    <select id="findAll" resultMap="userWithChangesResultMap">
+    <select id="findAll" resultMap="userResultMap">
         select
         <include refid="allUserCol"/>
         from user;
@@ -36,6 +54,7 @@
     <select id="findByUserId" resultMap="userWithChangesResultMap">
         select u.user_id,
                u.username,
+               u.password,
                u.real_name,
                u.position,
                u.attribute,

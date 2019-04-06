@@ -63,5 +63,5 @@ public class User implements Serializable {
      */
     private Integer isValid = 1;
 
-    private List<Changes> changes = new ArrayList<>();
+    private List<Changes> changes;
 }

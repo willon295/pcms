@@ -12,5 +12,4 @@ spring:
   profiles: publish
   redis:
     host: localhost
-
-
+---

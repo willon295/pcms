@@ -5,6 +5,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Willon
@@ -45,5 +46,9 @@ public class Changes implements Serializable {
      */
     private Integer isValid = 1;
 
+    /**
+     * 变更所有的kvm信息
+     */
+    private List<Integer> kvmIds;
 
 }

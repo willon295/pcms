@@ -3,6 +3,7 @@ package cn.willon.pcms.installconfserver.service;
 import cn.willon.pcms.installconfserver.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.*;
@@ -61,9 +62,12 @@ public class GenerateFileService {
         generateNetConf();
     }
 
+    /**
+     * 生成新的网卡配置文件
+     */
     private void generateNetConf() {
         // 读取已有的ip
-        FileReader fileReader = null;
+        FileReader fileReader;
         try {
             fileReader = new FileReader(ipPath);
 
@@ -84,8 +88,44 @@ public class GenerateFileService {
             cmds.add(command);
             processBuilder.command(cmds);
             processBuilder.start();
+            fileWriter.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    /**
+     * 获取新的IP
+     *
+     * @return 新的IP
+     */
+    public String readNewIp() {
+
+        String ip = "";
+        try (BufferedReader reader = new BufferedReader(new FileReader(ipPath))) {
+            ip = reader.readLine();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ip;
+    }
+
+    /**
+     * 获取新的Hostname
+     *
+     * @return 新的hostname
+     */
+    public String readNewHostname() {
+
+        String hostname = "";
+        try (BufferedReader reader = new BufferedReader(new FileReader(hostnamePath))) {
+            hostname = reader.readLine();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return hostname;
     }
 }

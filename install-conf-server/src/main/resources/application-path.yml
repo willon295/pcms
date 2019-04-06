@@ -1,25 +1,12 @@
-spring:
-  profiles: dev
-
-generate:
-  filePath:
-    ip: /var/ftp/ip
-    hostname: /var/ftp/hostname
-    originIfcfg: /var/ftp/ifcfg
-    newIfcfg: /var/ftp/ifcfg-eth0
-
-
 ---
 spring:
-  profiles: pre
-
+  profiles: dev
 generate:
   filePath:
     ip: /var/ftp/ip
     hostname: /var/ftp/hostname
     originIfcfg: /var/ftp/ifcfg
     newIfcfg: /var/ftp/ifcfg-eth0
-
 ---
 spring:
   profiles: publish
@@ -29,3 +16,4 @@ generate:
     hostname: /var/ftp/hostname
     originIfcfg: /var/ftp/ifcfg
     newIfcfg: /var/ftp/ifcfg-eth0
+---
