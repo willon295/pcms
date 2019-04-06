@@ -1,10 +1,9 @@
 package cn.willon.pcms.pcmsmidware.service;
 
-import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
-
 import cn.willon.pcms.pcmsmidware.domain.bean.Changes;
 import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
 import cn.willon.pcms.pcmsmidware.domain.bean.Project;
+import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
 import cn.willon.pcms.pcmsmidware.mapper.ChangeMapper;
 import cn.willon.pcms.pcmsmidware.mapper.KvmMapper;
@@ -94,37 +93,7 @@ public class ChangeService {
             changeMapper.saveUserChange(saveUserChangeCondition);
         }
 
-
     }
 
 
-    /**
-     * 保存变更
-     * 1. 保存 变更基本信息
-     * 2. 保存 对应的工程 kvm 基本信息
-     * 3. 保存 kvm 对应的用户基本信息
-     * 4. 异步创建 kvm， 创建成功之后更新kvm的IP
-     *
-     * @param change               变更基本信息
-     * @param userChangeConditions 用户变更的基本信息
-     * @param userKvmConditions    用户kvm的基本信息
-     */
-    public void saveChange(Changes change, List<Kvm> kvms, List<SaveUserChangeCondition> userChangeConditions, List<SaveUserKvmCondition> userKvmConditions) {
-
-        // 保存后返回新的变更id
-        changeMapper.save(change);
-        Integer changeId = change.getChangeId();
-        // 保存变更对应的所有用户
-        userChangeConditions.forEach(r -> {
-            r.setChangeId(changeId);
-            changeMapper.saveUserChange(r);
-        });
-        long currentTimeMillis = System.currentTimeMillis();
-        kvms.forEach(k -> {
-            k.setChangeId(changeId);
-            k.setCreateDate(currentTimeMillis);
-            kvmMapper.save(k);
-        });
-
-    }
 }
