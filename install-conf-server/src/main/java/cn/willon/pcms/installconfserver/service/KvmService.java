@@ -42,5 +42,5 @@ public interface KvmService {
      * @return 是否存在
      */
     @GetMapping("/kvm/exist/{hostname}")
-    boolean isCreateKvmSuccess(@PathVariable @RequestParam(name = "hostname") String hostname);
+    boolean isCreateKvmSuccess(@PathVariable(name = "hostname") @RequestParam(name = "hostname") String hostname);
 }
