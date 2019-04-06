@@ -1,7 +1,6 @@
 ---
 spring:
-  profiles:
-    active: dev
+  profiles: dev
   application:
     name: install-conf-server
 eureka:
@@ -12,8 +11,7 @@ eureka:
     prefer-ip-address: true
 ---
 spring:
-  profiles:
-    active: publish
+  profiles: publish
   application:
     name: install-conf-server
 eureka:

@@ -1,3 +1,4 @@
+---
 spring:
   profiles: dev
   redis:
