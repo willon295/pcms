@@ -37,7 +37,8 @@ public interface KvmMapper {
 
     /**
      * 更新kvm的ip
-     * @param condition  参数条件
+     *
+     * @param condition 参数条件
      */
     void updateKvmIpByHostname(UpdateKvmIpCondition condition);
 
@@ -45,7 +46,15 @@ public interface KvmMapper {
     /**
      * 修改kvm的状态
      *
-     * @param condition  参数条件
+     * @param condition 参数条件
      */
     void updateKvmDevStatusByHostname(UpdateKvmDevStatusCondition condition);
+
+    /**
+     * 判断kvm是否创建成功
+     *
+     * @param hostname 主机名
+     * @return 是否成功
+     */
+    int isCreateKvmSuccess(String hostname);
 }

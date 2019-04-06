@@ -1,9 +1,10 @@
 package cn.willon.pcms.pcmsmidware.thred;
 
-import org.springframework.beans.factory.annotation.Value;
+import cn.willon.pcms.pcmsmidware.executor.KvmBashExecutor;
+import cn.willon.pcms.pcmsmidware.service.InstallConfService;
+import cn.willon.pcms.pcmsmidware.service.KvmService;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import javax.annotation.Resource;
 import java.util.concurrent.Callable;
 
 /**
@@ -15,14 +16,14 @@ import java.util.concurrent.Callable;
 public class CreateKvmThread implements Callable<Boolean> {
 
 
-    @Value("${kvm.binPath}")
-    private String kvmShell;
+    @Resource
+    private KvmBashExecutor kvmBashExecutor;
 
-    @Value("${kvm.cmd.install}")
-    private String installCmd;
+    @Resource
+    private KvmService kvmService;
 
-    @Value("${kvm.cmd.restart}")
-    private String restartCmd;
+    @Resource
+    private InstallConfService installConfService;
 
     private String hostname;
 
@@ -30,24 +31,20 @@ public class CreateKvmThread implements Callable<Boolean> {
         this.hostname = hostname;
     }
 
-    private boolean exec(String cmd, String hostname) {
-        ArrayList<String> cmds = new ArrayList<>();
-        cmds.add("sh");
-        cmds.add("-c");
-        cmds.add(kvmShell + " " + cmd + " " + hostname);
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command(cmds);
-        try {
-            processBuilder.start();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
 
     @Override
-    public Boolean call() throws Exception {
-        boolean exec = exec(installCmd, hostname);
-        return exec;
+    public Boolean call() {
+
+        boolean lock = false;
+        while (!lock) {
+            lock = installConfService.tryLock();
+        }
+        // 开始生成文件， 并且创建kvm
+        boolean genFile = false;
+        while (!genFile) {
+            genFile = installConfService.generate(hostname);
+        }
+        kvmBashExecutor.installKvm(hostname);
+        return true;
     }
 }

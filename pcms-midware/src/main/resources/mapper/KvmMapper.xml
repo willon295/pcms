@@ -125,6 +125,14 @@
         update kvm
         set dev_status = #{devStatus}
         where hostname = #{hostname};
-
     </update>
+
+
+    <select id="isCreateKvmSuccess" resultType="java.lang.Integer">
+        select count(1)
+        from kvm
+        where hostname = #{hostname}
+          and trim(ip) != ''
+          and dev_status != -1;
+    </select>
 </mapper>

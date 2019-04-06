@@ -93,7 +93,6 @@ public class ChangeService {
             SaveUserChangeCondition saveUserChangeCondition = new SaveUserChangeCondition(userId, changeId, 0);
             changeMapper.saveUserChange(saveUserChangeCondition);
         }
-        // 异步创建 KVM
 
 
     }

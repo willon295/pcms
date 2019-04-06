@@ -5,7 +5,6 @@ import cn.willon.pcms.installconfserver.service.KvmService;
 import cn.willon.pcms.installconfserver.service.RedisService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -63,11 +62,10 @@ public class GenerateInstallConfFileController {
      */
     @GetMapping("/finish")
     public void finish() {
-
         // 更新
         String hostname = generateFileService.readNewHostname();
         String ip = generateFileService.readNewIp();
-        kvmService.updateKvmIp(hostname, ip);
+        kvmService.finishCreateKvm(hostname, ip);
         // 释放锁
         redisService.unlock();
     }

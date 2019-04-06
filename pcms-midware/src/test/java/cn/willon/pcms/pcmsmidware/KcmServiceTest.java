@@ -24,6 +24,8 @@ public class KcmServiceTest {
 
     @Test
     public void testFinishCreateKvm() {
-        kvmService.finishCreateKvm("a-br1","10.0.1.1");
+        boolean createKvmSuccess = kvmService.isCreateKvmSuccess("a-br2");
+
+        System.out.println(createKvmSuccess);
     }
 }
