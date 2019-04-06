@@ -1,0 +1,23 @@
+---
+server:
+  port: 8080
+spring:
+  profiles: dev
+  application:
+    name: pcms-midware
+eureka:
+  client:
+    service-url:
+      defaultZone: http://10.0.0.9:8761/eureka/
+---
+server:
+  port: 8080
+spring:
+  profiles: publish
+  application:
+    name: pcms-midware
+eureka:
+  client:
+    service-url:
+      defaultZone: http://10.0.0.9:8761/eureka/
+---
