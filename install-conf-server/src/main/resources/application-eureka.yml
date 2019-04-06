@@ -8,4 +8,18 @@ eureka:
   client:
     service-url:
       defaultZone: http://10.0.0.9:8761/eureka/
+  instance:
+    prefer-ip-address: true
+---
+spring:
+  profiles:
+    active: publish
+  application:
+    name: install-conf-server
+eureka:
+  client:
+    service-url:
+      defaultZone: http://10.0.0.9:8761/eureka/
+  instance:
+    prefer-ip-address: true
 ---
