@@ -73,8 +73,8 @@ public class ChangeController {
      *
      * @param changeId 变更id
      */
-    @DeleteMapping(value = "/change")
-    public void deleteChange(Integer changeId) {
+    @DeleteMapping(value = "/change/{changeId}")
+    public void deleteChange(@PathVariable(name = "changeId") Integer changeId) {
         Changes changeWithKvms = changeService.findChangeWithKvmIds(changeId);
         String branchName = changeWithKvms.getBranchName();
         List<Integer> kvmIds = changeWithKvms.getKvmIds();
