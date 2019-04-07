@@ -66,16 +66,22 @@ public class KvmService {
         for (String hostname : hostnames) {
 
             ThreadPoolManager.INSTANCE.addTask(() -> {
+                int tryLockCount = 0;
                 boolean lock = false;
                 while (!lock) {
+                    if (tryLockCount++>0){
+                        Thread.sleep(SLEEP_TIME);
+                    }
                     lock = installConfService.tryLock();
-                    Thread.sleep(SLEEP_TIME);
                 }
                 // 开始生成文件， 并且创建kvm
+                int tryGenfileCount = 0;
                 boolean genFile = false;
                 while (!genFile) {
+                    if (tryGenfileCount++>0){
+                        Thread.sleep(SLEEP_TIME);
+                    }
                     genFile = installConfService.generate(hostname);
-                    Thread.sleep(SLEEP_TIME);
                 }
                 kvmBashExecutor.installKvm(hostname);
                 return null;
