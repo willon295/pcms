@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @since 2019-04-06
  */
 @Service
-@FeignClient(value = "PCMS-MIDWARE")
+@FeignClient(value = "pcms-midware")
 public interface KvmService {
 
     /**

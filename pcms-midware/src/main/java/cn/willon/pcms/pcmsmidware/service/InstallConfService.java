@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @since 2019-04-06
  */
 @Service
-@FeignClient("INSTALL-CONF-SERVER")
+@FeignClient(value = "install-conf-server")
 public interface InstallConfService {
 
 
