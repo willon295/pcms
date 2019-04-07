@@ -23,6 +23,7 @@ import java.util.List;
 @Service
 public class KvmService {
 
+    public static final long SLEEP_TIME = 10000L;
     @Resource
     private KvmMapper kvmMapper;
 
@@ -31,8 +32,6 @@ public class KvmService {
 
     @Resource
     private InstallConfService installConfService;
-
-
 
 
     /**
@@ -70,11 +69,13 @@ public class KvmService {
                 boolean lock = false;
                 while (!lock) {
                     lock = installConfService.tryLock();
+                    Thread.sleep(SLEEP_TIME);
                 }
                 // 开始生成文件， 并且创建kvm
                 boolean genFile = false;
                 while (!genFile) {
                     genFile = installConfService.generate(hostname);
+                    Thread.sleep(SLEEP_TIME);
                 }
                 kvmBashExecutor.installKvm(hostname);
                 return null;
