@@ -206,3 +206,16 @@ nohup java -server -Xms256m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -Xdeb
 ```
 1. 开启远程调试,端口5005
 2. 将输出信息输出日志，日志每天一份
+
+# 启动流程
+
+1. 注册中心 `pcms-eureka (10.0.0.9)`
+```
+nohub java -jar /opt/app/pcms-eureka/*.jar >> `date +%Y%m%d`.log &
+```
+2. kvm安装配置服务器 `install-conf-server (10.0.0.10)`, 启动 `redis-server`, `vsftpd`,`java` 
+```
+systemctl start vsftpd
+redis-server &
+nohup java -server -Xms256m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 -jar  /opt/app/install-conf-server/*.jar  >> `date +%Y%m%d`.log &
+```

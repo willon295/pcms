@@ -62,7 +62,7 @@ public class KvmManageController {
     }
 
     /**
-     * 修改主机ip
+     * 修改主机ip, 并且运行主机
      *
      * @param hostname 主机名称
      * @param ip       ip
@@ -70,9 +70,7 @@ public class KvmManageController {
     @PutMapping("/kvm")
     public void finishCreateKvm(@RequestParam(name = "hostname") String hostname, @RequestParam(name = "ip") String ip) {
         kvmService.finishCreateKvm(hostname, ip);
-        if (kvmService.isCreateKvmSuccess(hostname)) {
-            kvmBashExecutor.startKvm(hostname);
-        }
+        kvmBashExecutor.startKvm(hostname);
     }
 
 
