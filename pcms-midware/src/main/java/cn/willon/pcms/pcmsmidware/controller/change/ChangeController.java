@@ -3,17 +3,24 @@ package cn.willon.pcms.pcmsmidware.controller.change;
 import cn.willon.pcms.pcmsmidware.domain.bean.Changes;
 import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
 import cn.willon.pcms.pcmsmidware.domain.bean.Project;
+import cn.willon.pcms.pcmsmidware.domain.bo.ChangeKvmsDO;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
+import cn.willon.pcms.pcmsmidware.domain.vo.ChangeDetailVO;
+import cn.willon.pcms.pcmsmidware.domain.vo.ChangeVO;
 import cn.willon.pcms.pcmsmidware.service.ChangeService;
 import cn.willon.pcms.pcmsmidware.service.GitlabService;
 import cn.willon.pcms.pcmsmidware.service.KvmService;
 import cn.willon.pcms.pcmsmidware.service.UserService;
+import cn.willon.pcms.pcmsmidware.util.Result;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -98,5 +105,36 @@ public class ChangeController {
                 log.info(String.format("删除分支失败： {projectId：%s,branchName: %s}", projectId, branchName));
             }
         });
+    }
+
+
+    @GetMapping("/change/{changeId}")
+    public Result changeDetail(@PathVariable(name = "changeId") Integer changeId) {
+
+        ChangeKvmsDO ckdo = changeService.changeDetail(changeId);
+        ChangeDetailVO changeDetailVO = new ChangeDetailVO();
+        Changes change = ckdo.getChange();
+
+        // TODO 转化
+        ChangeVO changeVO = new ChangeVO();
+        changeVO.setChangeId(change.getChangeId());
+        changeVO.setChangeName(change.getChangeName());
+        changeVO.setBranchName(change.getBranchName());
+        Instant createInstant = Instant.ofEpochMilli(change.getCreateDate());
+        LocalDateTime t1 = LocalDateTime.ofInstant(createInstant, ZoneId.systemDefault());
+        String createDate = String.format("%s-%s-%s", t1.getYear(), t1.getMonthValue(), t1.getDayOfMonth());
+
+        Instant expireInstant = Instant.ofEpochMilli(change.getExpireDate());
+        LocalDateTime t2 = LocalDateTime.ofInstant(expireInstant, ZoneId.systemDefault());
+        String expireDate = String.format("%s-%s-%s", t2.getYear(), t2.getMonthValue(), t2.getDayOfMonth());
+
+        changeVO.setCreateDate(createDate);
+        changeVO.setExpireDate(expireDate);
+        changeDetailVO.setChange(changeVO);
+        changeDetailVO.setOwnerId(ckdo.getOwnerId());
+        changeDetailVO.setOwnerName(ckdo.getOwnerName());
+        changeDetailVO.setKvms(ckdo.getKvms());
+
+        return Result.successResult(changeDetailVO);
     }
 }

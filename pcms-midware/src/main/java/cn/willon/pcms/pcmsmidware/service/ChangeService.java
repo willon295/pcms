@@ -3,6 +3,8 @@ package cn.willon.pcms.pcmsmidware.service;
 import cn.willon.pcms.pcmsmidware.domain.bean.Changes;
 import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
 import cn.willon.pcms.pcmsmidware.domain.bean.Project;
+import cn.willon.pcms.pcmsmidware.domain.bean.User;
+import cn.willon.pcms.pcmsmidware.domain.bo.ChangeKvmsDO;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
 import cn.willon.pcms.pcmsmidware.mapper.ChangeMapper;
@@ -44,7 +46,7 @@ public class ChangeService {
      * @param dto dto
      */
     public void saveChange(SaveChangeDto dto) {
-
+        Integer ownerId = dto.getOwnerId();
         String branchName = dto.getBranchName();
         String changeName = dto.getChangeName();
         long startTime = LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
@@ -59,6 +61,8 @@ public class ChangeService {
         Changes changes = new Changes();
         changes.setChangeName(changeName);
         changes.setBranchName(branchName);
+        changes.setCreateDate(startTime);
+        changes.setExpireDate(endTime);
         changeMapper.save(changes);
         Integer changeId = changes.getChangeId();
 
@@ -73,21 +77,19 @@ public class ChangeService {
             kvm.setProjectId(project.getProjectId());
             kvm.setProjectName(projectName);
             kvm.setIp("");
-            kvm.setCreateDate(startTime);
-            kvm.setExpireDate(endTime);
             kvm.setDevStatus(DevStatusEnums.INSTALLING.getStatus());
             kvm.setChangeId(changeId);
             kvmMapper.save(kvm);
             List<Integer> developers = project.getDevelopers();
             // 保存kvm用户
             for (Integer userId : developers) {
-                SaveUserKvmCondition saveUserKvm = new SaveUserKvmCondition(userId, kvm.getKvmId(), "select");
+                SaveUserKvmCondition saveUserKvm = new SaveUserKvmCondition(userId, kvm.getKvmId(), "all");
                 kvmMapper.saveUserKvm(saveUserKvm);
                 userIds.add(userId);
             }
         }
 
-        Integer ownerId = dto.getOwnerId();
+
         // 保存变更中的用户信息
         for (Integer userId : userIds) {
             SaveUserChangeCondition saveUserChangeCondition = new SaveUserChangeCondition(userId, changeId, 0);
@@ -107,5 +109,40 @@ public class ChangeService {
 
     public void deleteChange(Integer changeId) {
         changeMapper.deleteChangeByChangeId(changeId);
+    }
+
+
+    /**
+     * 查询所有的用户
+     *
+     * @param changeId
+     * @return
+     */
+    public ChangeKvmsDO changeDetail(Integer changeId) {
+        Changes byChangeId = changeMapper.findByChangeId(changeId);
+        User owner = changeMapper.findOwner(changeId);
+        ChangeKvmsDO changeKvmsDO = new ChangeKvmsDO();
+        changeKvmsDO.setChange(byChangeId);
+        List<Integer> kvmIds = byChangeId.getKvmIds();
+        for (Integer kvmId : kvmIds) {
+            Kvm kvmWithUser = kvmMapper.findKvmWithUser(kvmId);
+            changeKvmsDO.getKvms().add(kvmWithUser);
+        }
+        changeKvmsDO.setOwnerId(owner.getUserId());
+        changeKvmsDO.setOwnerName(owner.getRealName());
+        return changeKvmsDO;
+    }
+
+
+    /**
+     * 查找OwnerId
+     *
+     * @return OwnerId
+     */
+    public User findOwner(Integer changeId) {
+
+        User user = changeMapper.findOwner(changeId);
+        return user;
+
     }
 }

@@ -1,12 +1,12 @@
 package cn.willon.pcms.pcmsmidware.controller;
 
 import cn.willon.pcms.pcmsmidware.domain.bean.User;
+import cn.willon.pcms.pcmsmidware.domain.bo.UserChangeDO;
 import cn.willon.pcms.pcmsmidware.service.UserService;
 import cn.willon.pcms.pcmsmidware.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Objects;
 
 /**
  * UserController
@@ -29,7 +29,7 @@ public class UserController {
      */
     @GetMapping("/user/{userId}/changes")
     public Result userChange(@PathVariable(name = "userId") Integer userId) {
-        User byUserId = userService.findUserWithChange(userId);
+        UserChangeDO byUserId = userService.findUserWithChange(userId);
         return Result.successResult(byUserId);
     }
 
@@ -44,6 +44,5 @@ public class UserController {
         User exists = userService.exists(user);
         return Result.successResult(exists);
     }
-
 
 }

@@ -10,8 +10,6 @@
         project_id,
         project_name,
         ip,
-        create_date,
-        expire_date,
         dev_status,
         change_id,
         attribute,
@@ -24,8 +22,6 @@
         <result column="project_id" property="projectId"/>
         <result column="project_name" property="projectName"/>
         <result column="ip" property="ip"/>
-        <result column="create_date" property="createDate"/>
-        <result column="expire_date" property="expireDate"/>
         <result column="dev_status" property="devStatus"/>
         <result column="change_id" property="changeId"/>
         <result column="attribute" property="attribute"/>
@@ -38,8 +34,6 @@
         <result column="project_id" property="projectId"/>
         <result column="project_name" property="projectName"/>
         <result column="ip" property="ip"/>
-        <result column="create_date" property="createDate"/>
-        <result column="expire_date" property="expireDate"/>
         <result column="dev_status" property="devStatus"/>
         <result column="change_id" property="changeId"/>
         <result column="attribute" property="attribute"/>
@@ -55,15 +49,8 @@
 
     <insert id="save" keyColumn="kvm_id" useGeneratedKeys="true" keyProperty="kvmId"
             parameterType="cn.willon.pcms.pcmsmidware.domain.bean.Kvm">
-        insert into kvm (hostname, project_id, project_name, ip, create_date, expire_date, dev_status, change_id)
-        values (#{hostname},
-                #{projectId},
-                #{projectName},
-                #{ip},
-                #{createDate},
-                #{expireDate},
-                #{devStatus},
-                #{changeId})
+        insert into kvm (hostname, project_id, project_name, ip, dev_status, change_id)
+        values (#{hostname}, #{projectId}, #{projectName}, #{ip}, #{devStatus}, #{changeId})
     </insert>
 
 
@@ -96,14 +83,13 @@
         select k.kvm_id,
                k.hostname,
                k.change_id,
-               k.create_date,
-               k.expire_date,
                k.ip,
                k.project_id,
                k.project_name,
                k.attribute,
                k.dev_status,
                uk.permission,
+               u.user_id,
                u.username,
                u.real_name
         from kvm k

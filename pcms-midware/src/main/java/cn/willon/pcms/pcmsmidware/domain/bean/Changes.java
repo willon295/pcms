@@ -45,7 +45,17 @@ public class Changes implements Serializable {
      * isNullAble:1,defaultVal:1
      */
     private Integer isValid = 1;
+    /**
+     * 创建时间(时间戳)
+     * isNullAble:1
+     */
+    private Long createDate;
 
+    /**
+     * 销毁时间(时间戳)
+     * isNullAble:1
+     */
+    private Long expireDate;
     /**
      * 变更所有的kvm信息
      */

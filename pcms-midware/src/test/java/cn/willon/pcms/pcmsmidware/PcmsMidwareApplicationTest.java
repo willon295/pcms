@@ -2,15 +2,14 @@ package cn.willon.pcms.pcmsmidware;
 
 import cn.willon.pcms.pcmsmidware.domain.bean.Changes;
 import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
-import cn.willon.pcms.pcmsmidware.domain.bean.User;
-import cn.willon.pcms.pcmsmidware.domain.bo.ChangeBO;
+import cn.willon.pcms.pcmsmidware.domain.bo.ChangeKvmsDO;
+import cn.willon.pcms.pcmsmidware.domain.bo.UserChangeDO;
 import cn.willon.pcms.pcmsmidware.mapper.ChangeMapper;
 import cn.willon.pcms.pcmsmidware.mapper.KvmMapper;
 import cn.willon.pcms.pcmsmidware.mapper.UserMapper;
 import cn.willon.pcms.pcmsmidware.mapper.condition.SaveUserKvmCondition;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +29,7 @@ import java.util.List;
 public class PcmsMidwareApplicationTest {
 
 
+
     @Resource
     UserMapper userMapper;
 
@@ -43,22 +43,22 @@ public class PcmsMidwareApplicationTest {
     @Test
     public void testUserMapper() {
 
-        User byUserId = userMapper.findByUserId(2);
+        UserChangeDO byUserId = userMapper.findByUserId(2);
 
         System.out.println(byUserId);
     }
 
     @Test
     public void testChangeMapper() {
-        Changes byChangeId = changeMapper.findByChangeId(1);
-        ChangeBO changeBO = new ChangeBO();
-        changeBO.setChange(byChangeId);
+        Changes byChangeId = changeMapper.findByChangeId(28);
+        ChangeKvmsDO changeKvmsDO = new ChangeKvmsDO();
+        changeKvmsDO.setChange(byChangeId);
         List<Integer> kvmIds = byChangeId.getKvmIds();
         for (Integer kvmId : kvmIds) {
             Kvm kvmWithUser = kvmMapper.findKvmWithUser(kvmId);
-            changeBO.getKvms().add(kvmWithUser);
+            changeKvmsDO.getKvms().add(kvmWithUser);
         }
-        System.out.println(JSON.toJSONString(changeBO, SerializerFeature.DisableCircularReferenceDetect));
+        System.out.println(JSON.toJSONString(changeKvmsDO, SerializerFeature.DisableCircularReferenceDetect));
     }
 
     @Test

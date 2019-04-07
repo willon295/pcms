@@ -52,17 +52,6 @@ public class Kvm implements Serializable {
      */
     private String ip;
 
-    /**
-     * 创建时间(时间戳)
-     * isNullAble:1
-     */
-    private Long createDate;
-
-    /**
-     * 销毁时间(时间戳)
-     * isNullAble:1
-     */
-    private Long expireDate;
 
     /**
      * 项目环境工程状态

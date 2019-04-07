@@ -7,6 +7,8 @@
         change_id,
         change_name,
         branch_name,
+        create_date,
+        expire_date,
         attribute,
         is_valid
     </sql>
@@ -15,6 +17,8 @@
         <id property="changeId" column="change_id"/>
         <result column="change_name" property="changeName"/>
         <result column="branch_name" property="branchName"/>
+        <result column="create_date" property="createDate"/>
+        <result column="expire_date" property="expireDate"/>
         <result column="attribute" property="attribute"/>
         <result column="is_valid" property="isValid"/>
     </resultMap>
@@ -23,6 +27,8 @@
         <id property="changeId" column="change_id"/>
         <result column="change_name" property="changeName"/>
         <result column="branch_name" property="branchName"/>
+        <result column="create_date" property="createDate"/>
+        <result column="expire_date" property="expireDate"/>
         <result column="attribute" property="attribute"/>
         <collection property="kvmIds" ofType="java.lang.Integer">
             <id column="kvm_id" property="kvmId"/>
@@ -36,7 +42,7 @@
     </insert>
 
     <select id="findByChangeId" resultMap="changeWithKvmIdResultMap">
-        select c.change_id, c.change_name, c.branch_name, c.attribute, k.kvm_id
+        select c.change_id, c.change_name, c.branch_name, c.attribute, c.create_date, c.expire_date, k.kvm_id
         from changes c
                  left join kvm k on c.change_id = k.change_id
         where c.change_id = #{changeId}
@@ -59,4 +65,17 @@
         from changes
         where change_id = #{changeId}
     </delete>
+
+    <select id="findOwnerId" resultType="java.lang.Integer">
+        select user_id
+        from user_changes
+        where change_id = #{changeId}
+          and is_owner = 1;
+    </select>
+    <select id="findOwner" resultType="cn.willon.pcms.pcmsmidware.domain.bean.User">
+        select u.user_id as userId, u.username as username, u.real_name as realName
+        from user u
+                 left join user_changes uc on u.user_id = uc.user_id
+        where uc.change_id = #{changeId}  and uc.is_owner=1;
+    </select>
 </mapper>

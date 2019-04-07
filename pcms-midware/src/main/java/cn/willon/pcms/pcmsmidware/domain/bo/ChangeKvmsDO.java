@@ -15,7 +15,9 @@ import java.util.List;
  * @since 2019-04-06
  */
 @Data
-public class ChangeBO implements Serializable {
+public class ChangeKvmsDO implements Serializable {
     private Changes change;
+    private Integer ownerId;
+    private String ownerName;
     private List<Kvm> kvms = new ArrayList<>();
 }

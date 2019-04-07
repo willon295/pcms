@@ -1,6 +1,7 @@
 package cn.willon.pcms.pcmsmidware.mapper;
 
 import cn.willon.pcms.pcmsmidware.domain.bean.Changes;
+import cn.willon.pcms.pcmsmidware.domain.bean.User;
 import cn.willon.pcms.pcmsmidware.mapper.condition.SaveUserChangeCondition;
 
 import java.util.List;
@@ -44,4 +45,8 @@ public interface ChangeMapper {
     void saveUserChange(SaveUserChangeCondition condition);
 
     void deleteChangeByChangeId(Integer changeId);
+
+    Integer findOwnerId(Integer changeId);
+
+    User findOwner(Integer changeId);
 }

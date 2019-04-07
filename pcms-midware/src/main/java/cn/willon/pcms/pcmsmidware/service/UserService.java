@@ -1,6 +1,7 @@
 package cn.willon.pcms.pcmsmidware.service;
 
 import cn.willon.pcms.pcmsmidware.domain.bean.User;
+import cn.willon.pcms.pcmsmidware.domain.bo.UserChangeDO;
 import cn.willon.pcms.pcmsmidware.mapper.UserMapper;
 import cn.willon.pcms.pcmsmidware.service.rollback.UserServiceException;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,16 @@ public class UserService {
     @Resource
     private UserMapper userMapper;
 
-    public User findUserWithChange(Integer userId) {
-        return userMapper.findByUserId(userId);
+    /**
+     * 查找用户变更，且查找出适用与首页
+     *
+     * @param userId 用户Id
+     * @return
+     */
+    public UserChangeDO findUserWithChange(Integer userId) {
+        UserChangeDO userChangeDO = userMapper.findByUserId(userId);
+        userChangeDO.setTotalCount(userChangeDO.getChanges().size());
+        return userChangeDO;
     }
 
     public void deleteUserKvm(List<Integer> kvmIds) {

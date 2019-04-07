@@ -13,19 +13,18 @@
         attribute
     </sql>
 
-    <resultMap id="userWithChangesResultMap" type="cn.willon.pcms.pcmsmidware.domain.bean.User">
+    <resultMap id="userWithChangesResultMap" type="cn.willon.pcms.pcmsmidware.domain.bo.UserChangeDO">
         <id column="user_id" property="userId"/>
         <result column="username" property="username"/>
         <result column="password" property="password"/>
         <result column="real_name" property="realName"/>
         <result column="position" property="position"/>
-        <result column="attribute" property="attribute"/>
-        <collection property="changes" ofType="cn.willon.pcms.pcmsmidware.domain.bean.Changes">
+        <collection property="changes" ofType="cn.willon.pcms.pcmsmidware.domain.bo.ChangeDO">
             <id property="changeId" column="change_id"/>
+            <result column="is_owner" property="isOwner"/>
             <result column="change_name" property="changeName"/>
             <result column="branch_name" property="branchName"/>
-            <result column="attribute" property="attribute"/>
-            <result column="is_valid" property="isValid"/>
+            <result column="expireDate" property="expireDate"/>
         </collection>
     </resultMap>
 
@@ -57,13 +56,11 @@
                u.password,
                u.real_name,
                u.position,
-               u.attribute,
-               u.is_valid,
+               uc.is_owner,
                c.change_id,
                c.change_name,
-               c.branch_name,
-               c.attribute,
-               c.is_valid
+               date_format(FROM_UNIXTIME(c.expire_date/1000),'%Y-%m-%d') as expireDate,
+               c.branch_name
         from user u
                  left join user_changes uc on u.user_id = uc.user_id
                  left join changes c on uc.change_id = c.change_id
@@ -87,7 +84,7 @@
             resultMap="userResultMap">
         select
         <include refid="allUserCol"/>
-        from user where  username=#{username} and  password=#{password};
+        from user where username=#{username} and password=#{password};
     </select>
 
 </mapper>

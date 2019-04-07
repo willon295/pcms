@@ -2,6 +2,7 @@ package cn.willon.pcms.pcmsmidware.controller.kvm;
 
 import cn.willon.pcms.pcmsmidware.executor.KvmBashExecutor;
 import cn.willon.pcms.pcmsmidware.service.KvmService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -14,10 +15,11 @@ import javax.annotation.Resource;
  */
 @CrossOrigin(allowedHeaders = "*", maxAge = 3600)
 @RestController
+@Slf4j
 public class KvmManageController {
 
 
-    public static final long SLEEP_TIME = 20000L;
+    private static final long SLEEP_TIME = 10000L;
 
     @Resource
     private KvmService kvmService;
@@ -76,7 +78,7 @@ public class KvmManageController {
             // 由于安装完成之后 kvm处于完成配置状态，尚未关机，所以等待20S
             Thread.sleep(SLEEP_TIME);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.info(String.format("创建线程失败：  {hostname:%s , ip:%s", hostname, ip));
         }
         kvmBashExecutor.startKvm(hostname);
     }

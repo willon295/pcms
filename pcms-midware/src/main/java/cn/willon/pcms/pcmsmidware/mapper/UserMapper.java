@@ -1,6 +1,7 @@
 package cn.willon.pcms.pcmsmidware.mapper;
 
 import cn.willon.pcms.pcmsmidware.domain.bean.User;
+import cn.willon.pcms.pcmsmidware.domain.bo.UserChangeDO;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface UserMapper {
      * @param userId 用户id
      * @return 用户信息，包含变更列表
      */
-    User findByUserId(Integer userId);
+    UserChangeDO findByUserId(Integer userId);
 
     List<User> findAll();
 
