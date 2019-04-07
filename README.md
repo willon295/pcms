@@ -197,3 +197,12 @@
 | pack-deploy         | 10.0.0.14 | 打包部署服务      |
 | pcms-web            | 10.0.0.15 | 管理前台        |
 | kvm-api | 不定 | kvm访问控制服务，运行在各个工程宿主机上 |
+
+# 部署规范
+
+部署使用命令如下：
+```bash
+nohup java -server -Xms256m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 -jar  XXXX.jar  >> `date +%Y%m%d`.log &
+```
+1. 开启远程调试,端口5005
+2. 将输出信息输出日志，日志每天一份

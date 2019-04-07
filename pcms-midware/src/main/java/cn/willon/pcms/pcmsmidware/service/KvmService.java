@@ -1,10 +1,10 @@
 package cn.willon.pcms.pcmsmidware.service;
 
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
+import cn.willon.pcms.pcmsmidware.executor.KvmBashExecutor;
 import cn.willon.pcms.pcmsmidware.mapper.KvmMapper;
 import cn.willon.pcms.pcmsmidware.mapper.condition.UpdateKvmDevStatusCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.UpdateKvmIpCondition;
-import cn.willon.pcms.pcmsmidware.thred.CreateKvmThread;
 import cn.willon.pcms.pcmsmidware.thred.ThreadPoolManager;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +25,12 @@ public class KvmService {
 
     @Resource
     private KvmMapper kvmMapper;
+
+    @Resource
+    private KvmBashExecutor kvmBashExecutor;
+
+    @Resource
+    private InstallConfService installConfService;
 
     /**
      * 更新kvm的ip
@@ -54,11 +60,25 @@ public class KvmService {
 
 
     public void createKvmAsync(List<String> hostnames) {
-        hostnames.forEach(
-                r -> {
-                    CreateKvmThread task = new CreateKvmThread(r);
-                    ThreadPoolManager.INSTANCE.addTask(task);
-                });
+
+        for (String hostname : hostnames) {
+
+            ThreadPoolManager.INSTANCE.addTask(() -> {
+                boolean lock = false;
+                while (!lock) {
+                    lock = installConfService.tryLock();
+                }
+                // 开始生成文件， 并且创建kvm
+                boolean genFile = false;
+                while (!genFile) {
+                    genFile = installConfService.generate(hostname);
+                }
+                kvmBashExecutor.installKvm(hostname);
+                return null;
+            });
+
+
+        }
     }
 
 }
