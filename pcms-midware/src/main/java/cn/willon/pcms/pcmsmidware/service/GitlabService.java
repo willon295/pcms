@@ -34,7 +34,7 @@ public class GitlabService {
      */
     public List<User> findAllUser() throws IOException {
         List<GitlabUser> users = gitlabAPI.getUsers();
-        List<User> collect = users.stream().map(u -> {
+        List<User> collect = users.stream().filter(uu -> uu.getId()!=1).map(u -> {
             User user = new User();
             user.setUserId(u.getId());
             user.setUsername(u.getUsername());

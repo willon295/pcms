@@ -3,11 +3,10 @@ package cn.willon.pcms.pcmsmidware.controller;
 import cn.willon.pcms.pcmsmidware.domain.bean.User;
 import cn.willon.pcms.pcmsmidware.service.UserService;
 import cn.willon.pcms.pcmsmidware.util.Result;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * UserController
@@ -19,7 +18,6 @@ import javax.annotation.Resource;
 @RestController
 public class UserController {
 
-
     @Resource
     private UserService userService;
 
@@ -30,9 +28,21 @@ public class UserController {
      * @return 用户变更
      */
     @GetMapping("/user/{userId}/changes")
-    public Result userChange(Integer userId) {
+    public Result userChange(@PathVariable(name = "userId") Integer userId) {
         User byUserId = userService.findUserWithChange(userId);
         return Result.successResult(byUserId);
+    }
+
+    /**
+     * 登陆
+     *
+     * @param user 用户信息
+     * @return 返回登陆结果
+     */
+    @PostMapping("/user/login")
+    public Result login(@RequestBody User user) {
+        User exists = userService.exists(user);
+        return Result.successResult(exists);
     }
 
 

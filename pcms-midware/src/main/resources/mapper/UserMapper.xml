@@ -83,4 +83,11 @@
         where change_id = #{changeId}
     </delete>
 
+    <select id="findByUsernamePassword" parameterType="cn.willon.pcms.pcmsmidware.domain.bean.User"
+            resultMap="userResultMap">
+        select
+        <include refid="allUserCol"/>
+        from user where  username=#{username} and  password=#{password};
+    </select>
+
 </mapper>

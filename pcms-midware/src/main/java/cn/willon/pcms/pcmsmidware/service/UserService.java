@@ -34,4 +34,9 @@ public class UserService {
     public void deleteUserChange(Integer changeId) {
         userMapper.deleteUserChange(changeId);
     }
+
+    public User exists(User user) {
+        User loginUser = userMapper.findByUsernamePassword(user);
+        return loginUser;
+    }
 }

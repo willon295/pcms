@@ -38,10 +38,6 @@ public class ChangeService {
     @Resource
     private ChangeMapper changeMapper;
 
-
-    @Resource
-    private UserService userService;
-
     /**
      * 保存变更信息
      *
@@ -91,9 +87,13 @@ public class ChangeService {
             }
         }
 
+        Integer ownerId = dto.getOwnerId();
         // 保存变更中的用户信息
         for (Integer userId : userIds) {
             SaveUserChangeCondition saveUserChangeCondition = new SaveUserChangeCondition(userId, changeId, 0);
+            if (userId.equals(ownerId)) {
+                saveUserChangeCondition.setIsOwner(1);
+            }
             changeMapper.saveUserChange(saveUserChangeCondition);
         }
 
@@ -101,7 +101,6 @@ public class ChangeService {
 
 
     public Changes findChangeWithKvmIds(Integer changeId) {
-
         Changes byChangeId = changeMapper.findByChangeId(changeId);
         return byChangeId;
     }

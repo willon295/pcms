@@ -15,6 +15,11 @@ import java.util.List;
 @Data
 public class SaveChangeDto implements Serializable {
 
+
+    /**
+     * 变更拥有着id
+     */
+    private Integer ownerId;
     /**
      * 变更名称
      */

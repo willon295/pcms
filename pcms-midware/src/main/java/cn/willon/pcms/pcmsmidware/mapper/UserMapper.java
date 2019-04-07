@@ -27,4 +27,6 @@ public interface UserMapper {
     void deleteUserKvm(Integer kvmId);
 
     void deleteUserChange(Integer changeId);
+
+    User findByUsernamePassword(User user);
 }
