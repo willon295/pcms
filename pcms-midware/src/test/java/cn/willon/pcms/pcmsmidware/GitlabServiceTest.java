@@ -1,5 +1,8 @@
 package cn.willon.pcms.pcmsmidware;
 
+import cn.willon.pcms.pcmsmidware.domain.bean.Project;
+import cn.willon.pcms.pcmsmidware.domain.bean.User;
+import cn.willon.pcms.pcmsmidware.service.GitlabService;
 import com.alibaba.fastjson.JSON;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabProject;
@@ -25,22 +28,27 @@ public class GitlabServiceTest {
 
 
     @Resource
-    GitlabAPI gitlabAPI;
+    GitlabService gitlabService;
 
     @Test
     public void queryProjects() throws IOException {
-        List<GitlabProject> projects = gitlabAPI.getProjects();
-        for (GitlabProject project : projects) {
-            Integer id = project.getId();
-            String name = project.getName();
-            System.out.println(id + ":" + name);
-        }
+        List<Project> projects = gitlabService.findAllProjects();
+        System.out.println(JSON.toJSONString(projects));
     }
 
     @Test
     public void queryMember() throws IOException {
-        List<GitlabUser> users = gitlabAPI.getUsers();
-        System.out.println(JSON.toJSONString(users));
+
+        List<User> allUser = gitlabService.findAllUser();
+        System.out.println(JSON.toJSONString(allUser));
+    }
+
+
+
+    @Test
+    public void  branch() throws IOException {
+
+        gitlabService.deleteBranch(3,"test1");
 
     }
 }

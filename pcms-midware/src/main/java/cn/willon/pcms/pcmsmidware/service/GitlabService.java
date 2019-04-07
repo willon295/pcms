@@ -1,9 +1,8 @@
 package cn.willon.pcms.pcmsmidware.service;
 
-import com.google.common.collect.Lists;
-
 import cn.willon.pcms.pcmsmidware.domain.bean.Project;
 import cn.willon.pcms.pcmsmidware.domain.bean.User;
+import com.google.common.collect.Lists;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabProject;
 import org.gitlab.api.models.GitlabUser;
@@ -57,6 +56,31 @@ public class GitlabService {
 
         }).collect(Collectors.toList());
         return collect;
+    }
+
+
+    /**
+     * 创建分支
+     *
+     * @param projectId
+     * @param branchName
+     * @throws IOException
+     */
+    public void createBranch(Integer projectId, String branchName) throws IOException {
+
+        gitlabAPI.createBranch(projectId, branchName, "master");
+    }
+
+
+    /**
+     * 删除分支
+     *
+     * @param projectId
+     * @param branchName
+     * @throws IOException
+     */
+    public void deleteBranch(Integer projectId, String branchName) throws IOException {
+        gitlabAPI.deleteBranch(projectId, branchName);
     }
 
 }

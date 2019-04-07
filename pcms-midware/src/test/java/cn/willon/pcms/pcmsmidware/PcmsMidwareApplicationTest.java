@@ -27,7 +27,6 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Slf4j
 public class PcmsMidwareApplicationTest {
 
 
@@ -44,7 +43,7 @@ public class PcmsMidwareApplicationTest {
     @Test
     public void testUserMapper() {
 
-        User byUserId = userMapper.findByUserId(3);
+        User byUserId = userMapper.findByUserId(2);
 
         System.out.println(byUserId);
     }

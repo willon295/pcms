@@ -32,6 +32,9 @@ public class KvmService {
     @Resource
     private InstallConfService installConfService;
 
+
+
+
     /**
      * 更新kvm的ip
      *
