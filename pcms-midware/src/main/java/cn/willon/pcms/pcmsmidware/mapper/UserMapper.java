@@ -24,4 +24,7 @@ public interface UserMapper {
 
     void save(User user);
 
+    void deleteUserKvm(Integer kvmId);
+
+    void deleteUserChange(Integer changeId);
 }

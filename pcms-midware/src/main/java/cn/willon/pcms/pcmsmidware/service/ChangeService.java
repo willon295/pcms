@@ -38,6 +38,10 @@ public class ChangeService {
     @Resource
     private ChangeMapper changeMapper;
 
+
+    @Resource
+    private UserService userService;
+
     /**
      * 保存变更信息
      *
@@ -96,4 +100,13 @@ public class ChangeService {
     }
 
 
+    public Changes findChangeWithKvmIds(Integer changeId) {
+
+        Changes byChangeId = changeMapper.findByChangeId(changeId);
+        return byChangeId;
+    }
+
+    public void deleteChange(Integer changeId) {
+        changeMapper.deleteChangeByChangeId(changeId);
+    }
 }

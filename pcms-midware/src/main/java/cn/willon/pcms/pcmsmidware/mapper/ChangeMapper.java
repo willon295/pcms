@@ -42,4 +42,6 @@ public interface ChangeMapper {
      * @param condition 条件
      */
     void saveUserChange(SaveUserChangeCondition condition);
+
+    void deleteChangeByChangeId(Integer changeId);
 }

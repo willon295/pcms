@@ -70,4 +70,17 @@
         where u.user_id = #{userId}
           and u.is_valid = 1;
     </select>
+
+    <delete id="deleteUserKvm">
+        delete
+        from user_kvm
+        where kvm_id = #{kvmId}
+    </delete>
+
+    <delete id="deleteUserChange">
+        delete
+        from user_changes
+        where change_id = #{changeId}
+    </delete>
+
 </mapper>

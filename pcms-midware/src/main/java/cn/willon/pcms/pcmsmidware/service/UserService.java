@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * UserService
@@ -24,5 +25,13 @@ public class UserService {
 
     public User findUserWithChange(Integer userId) {
         return userMapper.findByUserId(userId);
+    }
+
+    public void deleteUserKvm(List<Integer> kvmIds) {
+        kvmIds.forEach(i -> userMapper.deleteUserKvm(i));
+    }
+
+    public void deleteUserChange(Integer changeId) {
+        userMapper.deleteUserChange(changeId);
     }
 }

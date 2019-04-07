@@ -1,5 +1,6 @@
 package cn.willon.pcms.pcmsmidware.service;
 
+import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.executor.KvmBashExecutor;
 import cn.willon.pcms.pcmsmidware.mapper.KvmMapper;
@@ -7,10 +8,12 @@ import cn.willon.pcms.pcmsmidware.mapper.condition.UpdateKvmDevStatusCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.UpdateKvmIpCondition;
 import cn.willon.pcms.pcmsmidware.thred.ThreadPoolManager;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,6 +64,11 @@ public class KvmService {
     }
 
 
+    /**
+     * 异步创建Kvm
+     *
+     * @param hostnames 主机名
+     */
     public void createKvmAsync(List<String> hostnames) {
 
         for (String hostname : hostnames) {
@@ -69,7 +77,7 @@ public class KvmService {
                 int tryLockCount = 0;
                 boolean lock = false;
                 while (!lock) {
-                    if (tryLockCount++>0){
+                    if (tryLockCount++ > 0) {
                         Thread.sleep(SLEEP_TIME);
                     }
                     lock = installConfService.tryLock();
@@ -78,7 +86,7 @@ public class KvmService {
                 int tryGenfileCount = 0;
                 boolean genFile = false;
                 while (!genFile) {
-                    if (tryGenfileCount++>0){
+                    if (tryGenfileCount++ > 0) {
                         Thread.sleep(SLEEP_TIME);
                     }
                     genFile = installConfService.generate(hostname);
@@ -89,6 +97,37 @@ public class KvmService {
 
 
         }
+    }
+
+
+
+    public void deleteKvmRecordByChangeId(Integer changeId) {
+        kvmMapper.deleteKvmByChangeId(changeId);
+    }
+
+    /**
+     * 异步删除Kvm
+     *
+     * @param hostnames 主机名
+     */
+    public void destroyKvmAsync(List<String> hostnames) {
+
+        for (String hostname : hostnames) {
+            ThreadPoolManager.INSTANCE.addTask(() -> {
+                kvmBashExecutor.deleteKvm(hostname);
+                return null;
+            });
+        }
+    }
+
+    public List<Kvm> findKvmByIds(List<Integer> kvmIds) {
+
+        ArrayList<Kvm> kvms = Lists.newArrayList();
+        for (Integer kvmId : kvmIds) {
+            Kvm byKvmId = kvmMapper.findByKvmId(kvmId);
+            kvms.add(byKvmId);
+        }
+        return kvms;
     }
 
 }

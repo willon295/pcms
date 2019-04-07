@@ -17,6 +17,8 @@ import javax.annotation.Resource;
 public class KvmManageController {
 
 
+    public static final long SLEEP_TIME = 20000L;
+
     @Resource
     private KvmService kvmService;
 
@@ -70,6 +72,12 @@ public class KvmManageController {
     @PutMapping("/kvm")
     public void finishCreateKvm(@RequestParam(name = "hostname") String hostname, @RequestParam(name = "ip") String ip) {
         kvmService.finishCreateKvm(hostname, ip);
+        try {
+            // 由于安装完成之后 kvm处于完成配置状态，尚未关机，所以等待20S
+            Thread.sleep(SLEEP_TIME);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         kvmBashExecutor.startKvm(hostname);
     }
 

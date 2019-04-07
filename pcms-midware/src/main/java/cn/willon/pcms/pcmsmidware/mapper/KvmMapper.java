@@ -57,4 +57,10 @@ public interface KvmMapper {
      * @return 是否成功
      */
     int isCreateKvmSuccess(String hostname);
+
+    /**
+     * 根据
+     * @param changeId
+     */
+    void deleteKvmByChangeId(Integer changeId);
 }

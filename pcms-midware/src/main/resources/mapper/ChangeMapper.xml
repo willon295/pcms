@@ -53,4 +53,10 @@
         insert into user_changes (user_id, change_id, is_owner)
         VALUES (#{userId}, #{changeId}, #{isOwner})
     </insert>
+
+    <delete id="deleteChangeByChangeId">
+        delete
+        from changes
+        where change_id = #{changeId}
+    </delete>
 </mapper>

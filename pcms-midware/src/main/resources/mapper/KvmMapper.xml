@@ -121,7 +121,6 @@
     </update>
 
     <update id="updateKvmDevStatusByHostname">
-
         update kvm
         set dev_status = #{devStatus}
         where hostname = #{hostname};
@@ -135,4 +134,13 @@
           and trim(ip) != ''
           and dev_status != -1;
     </select>
+
+
+    <delete id="deleteKvmByChangeId">
+
+        delete
+        from kvm
+        where change_id = #{changeId}
+
+    </delete>
 </mapper>
