@@ -43,7 +43,7 @@ public class KvmBashExecutor {
         processBuilder.command(cmds);
         try {
             processBuilder.start();
-            log.info("执行shell命令： "+ JSON.toJSONString(cmds));
+            log.info("执行shell命令： " + JSON.toJSONString(cmds));
             return true;
         } catch (IOException e) {
             return false;
@@ -51,18 +51,42 @@ public class KvmBashExecutor {
     }
 
 
+    /**
+     * 销毁KVM
+     *
+     * @param hostname 主机名
+     * @return 是否成功
+     */
     public boolean deleteKvm(String hostname) {
         return exec(deleteCmd, hostname);
     }
 
+    /**
+     * 创建KVM
+     *
+     * @param hostname 主机名
+     * @return 是否成功
+     */
     public boolean installKvm(String hostname) {
         return exec(installCmd, hostname);
     }
 
+    /**
+     * 重启KVM
+     *
+     * @param hostname 主机名
+     * @return 是否成功
+     */
     public boolean restartKvm(String hostname) {
         return exec(restartCmd, hostname);
     }
 
+    /**
+     * 开启KVM
+     *
+     * @param hostname 主机名
+     * @return 是否成功
+     */
     public boolean startKvm(String hostname) {
         return exec(startCmd, hostname);
     }

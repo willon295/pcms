@@ -34,7 +34,7 @@ public class GitlabService {
      */
     public List<User> findAllUser() throws IOException {
         List<GitlabUser> users = gitlabAPI.getUsers();
-        List<User> collect = users.stream().filter(uu -> uu.getId()!=1).map(u -> {
+        List<User> collect = users.stream().filter(uu -> uu.getId() != 1).map(u -> {
             User user = new User();
             user.setUserId(u.getId());
             user.setUsername(u.getUsername());
@@ -45,6 +45,12 @@ public class GitlabService {
     }
 
 
+    /**
+     * 获取所有工程
+     *
+     * @return
+     * @throws IOException
+     */
     public List<Project> findAllProjects() throws IOException {
         List<GitlabProject> projects = gitlabAPI.getProjects();
         List<Project> collect = projects.stream().map(p -> {
@@ -57,7 +63,6 @@ public class GitlabService {
         }).collect(Collectors.toList());
         return collect;
     }
-
 
     /**
      * 创建分支

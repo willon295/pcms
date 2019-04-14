@@ -60,7 +60,15 @@ public interface KvmMapper {
 
     /**
      * 根据
-     * @param changeId
+     *
+     * @param changeId 参数条件
      */
     void deleteKvmByChangeId(Integer changeId);
+
+    /**
+     * 更新kvm状态
+     *
+     * @param condition 参数条件
+     */
+    void updateDevStatus(UpdateKvmDevStatusCondition condition);
 }

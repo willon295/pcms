@@ -2,7 +2,9 @@ package cn.willon.pcms.pcmsmidware.mapper;
 
 import cn.willon.pcms.pcmsmidware.domain.bean.Changes;
 import cn.willon.pcms.pcmsmidware.domain.bean.User;
+import cn.willon.pcms.pcmsmidware.mapper.condition.QueryChangeProjectPermCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.SaveUserChangeCondition;
+import cn.willon.pcms.pcmsmidware.mapper.condition.UpdatePubStatusCondition;
 
 import java.util.List;
 
@@ -49,4 +51,13 @@ public interface ChangeMapper {
     Integer findOwnerId(Integer changeId);
 
     User findOwner(Integer changeId);
+
+    /**
+     * 当前变更，是否拥有当前工程的操作权限
+     */
+    int hasProjectPublishPermission(QueryChangeProjectPermCondition condition);
+
+    void updateProjectStatus(UpdatePubStatusCondition condition);
+
+    String findPublishProjectIP(Integer changeId, Integer projectId);
 }

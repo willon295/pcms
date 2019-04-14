@@ -55,6 +55,4 @@ public class RedisService {
         Jedis jedis = new Jedis(host);
         return jedis;
     }
-
-
 }

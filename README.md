@@ -147,7 +147,7 @@
 
 
 
-## 3.1 文件目录
+## 3.1.1 文件目录规范
 
 1. `JAVA_HOME` 为 `/opt/lib/jdk8/`
 2. `M2_HOME` 为 `/opt/lib/maven3`
@@ -157,7 +157,7 @@
 6. KVM需要的ISO文件存放目录： `/opt/kvm/iso/`
 7. app运行目录： `/opt/app/{project-name}/`
 
-## 3.2 服务器环境配置
+## 3.1.2 服务器环境配置
 
 统一密码： `sdfsdf` 
 
@@ -217,5 +217,5 @@ nohub java -jar /opt/app/pcms-eureka/*.jar >> `date +%Y%m%d`.log &
 ```
 systemctl start vsftpd
 redis-server &
-nohup java -server -Xms256m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 -jar  /opt/app/install-conf-server/*.jar  >> `date +%Y%m%d`.log &
+nohup java -server -Xms256m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 -jar  /opt/app/工程目录/*.jar  >> `date +%Y%m%d`.log &
 ```

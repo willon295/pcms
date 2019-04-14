@@ -83,7 +83,6 @@ public class ChangeController {
     @DeleteMapping(value = "/change/{changeId}")
     public void deleteChange(@PathVariable(name = "changeId") Integer changeId) {
         Changes changeWithKvms = changeService.findChangeWithKvmIds(changeId);
-        String branchName = changeWithKvms.getBranchName();
         List<Integer> kvmIds = changeWithKvms.getKvmIds();
         List<Kvm> kvmWithIds = kvmService.findKvmByIds(kvmIds);
         List<String> hostnames = kvmWithIds.stream().map(Kvm::getHostname).collect(Collectors.toList());
@@ -96,26 +95,21 @@ public class ChangeController {
         userService.deleteUserChange(changeId);
         // 4. 删除变更
         changeService.deleteChange(changeId);
-        // 5. 删除Gitlab代码分支
-        kvmWithIds.forEach(r -> {
-            Integer projectId = r.getProjectId();
-            try {
-                gitlabService.deleteBranch(projectId, branchName);
-            } catch (IOException e) {
-                log.info(String.format("删除分支失败： {projectId：%s,branchName: %s}", projectId, branchName));
-            }
-        });
     }
 
 
+    /**
+     * 获取变更详情
+     *
+     * @param changeId 变更ID
+     * @return 变更详情
+     */
     @GetMapping("/change/{changeId}")
     public Result changeDetail(@PathVariable(name = "changeId") Integer changeId) {
 
         ChangeKvmsDO ckdo = changeService.changeDetail(changeId);
         ChangeDetailVO changeDetailVO = new ChangeDetailVO();
         Changes change = ckdo.getChange();
-
-        // TODO 转化
         ChangeVO changeVO = new ChangeVO();
         changeVO.setChangeId(change.getChangeId());
         changeVO.setChangeName(change.getChangeName());
@@ -136,5 +130,21 @@ public class ChangeController {
         changeDetailVO.setKvms(ckdo.getKvms());
 
         return Result.successResult(changeDetailVO);
+    }
+
+
+    /**
+     * // TODO 修改变更
+     * 1. 修改变更的owner
+     * 2. 修改工程的参与者
+     * 3. 添加依赖工程
+     *
+     * @return 处理结果
+     */
+    @PutMapping("/change")
+    public Result updateChange() {
+
+
+        return  null;
     }
 }

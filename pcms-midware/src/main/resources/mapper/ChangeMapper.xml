@@ -76,6 +76,28 @@
         select u.user_id as userId, u.username as username, u.real_name as realName
         from user u
                  left join user_changes uc on u.user_id = uc.user_id
-        where uc.change_id = #{changeId}  and uc.is_owner=1;
+        where uc.change_id = #{changeId}
+          and uc.is_owner = 1;
+    </select>
+
+    <select id="hasProjectPublishPermission">
+        select count(1)
+        from project
+        where project_id = #{projectId}
+          and cur_change_id = #{changeId};
+    </select>
+
+    <update id="updateProjectStatus">
+        update project
+        set pub_status = #{pubStatus}
+        where project_id = #{projectId}
+          and cur_change_id = #{changeId};
+    </update>
+
+    <select id="findPublishProjectIP" resultType="java.lang.String">
+        select server_ip
+        from project
+        where project_id = #{projectId}
+          and cur_change_id = #{changeId};
     </select>
 </mapper>

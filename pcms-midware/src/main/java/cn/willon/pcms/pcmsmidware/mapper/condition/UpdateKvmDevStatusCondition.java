@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 /**
  * UpdateKvmDevStatusCondition
@@ -15,11 +16,12 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateKvmDevStatusCondition {
+public class UpdateKvmDevStatusCondition implements Serializable {
 
-    @NotBlank(message = "hostname 不能为空")
-    private String hostname;
+    private Integer kvmId;
 
-
+    /**
+     * @see cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums
+     */
     private Integer devStatus;
 }

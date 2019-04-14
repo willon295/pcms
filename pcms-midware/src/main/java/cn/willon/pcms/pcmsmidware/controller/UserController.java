@@ -7,6 +7,7 @@ import cn.willon.pcms.pcmsmidware.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * UserController
@@ -41,6 +42,9 @@ public class UserController {
      */
     @PostMapping("/user/login")
     public Result login(@RequestBody User user) {
+        if (Objects.isNull(user)) {
+            return Result.failResult("用户信息不能为空");
+        }
         User exists = userService.exists(user);
         return Result.successResult(exists);
     }

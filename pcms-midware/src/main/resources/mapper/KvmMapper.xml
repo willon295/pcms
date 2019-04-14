@@ -127,6 +127,13 @@
         delete
         from kvm
         where change_id = #{changeId}
-
     </delete>
+
+
+    <update id="updateDevStatus">
+        update kvm
+        set  dev_status=#{devStatus}
+        where kvm_id=#{kvmId} ;
+    </update>
+
 </mapper>

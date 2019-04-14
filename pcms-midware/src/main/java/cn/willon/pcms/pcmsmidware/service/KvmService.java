@@ -49,7 +49,8 @@ public class KvmService {
         }
         log.info(String.format("更新主机ip {hostname: %s , ip:%s}", hostname, ip));
         kvmMapper.updateKvmIpByHostname(new UpdateKvmIpCondition(hostname, ip));
-        kvmMapper.updateKvmDevStatusByHostname(new UpdateKvmDevStatusCondition(hostname, DevStatusEnums.PENDING.getStatus()));
+        Kvm byHostname = kvmMapper.findByHostname(hostname);
+        updateDevStatus(byHostname.getKvmId(), DevStatusEnums.PENDING.getStatus());
     }
 
 
@@ -100,7 +101,6 @@ public class KvmService {
     }
 
 
-
     public void deleteKvmRecordByChangeId(Integer changeId) {
         kvmMapper.deleteKvmByChangeId(changeId);
     }
@@ -130,4 +130,25 @@ public class KvmService {
         return kvms;
     }
 
+    /**
+     * 通过主机名获取kvm信息
+     *
+     * @param hostname 主机名
+     * @return kvm信息
+     */
+    public Kvm findByHostname(String hostname) {
+        Kvm byHostname = kvmMapper.findByHostname(hostname);
+        return byHostname;
+    }
+
+    /**
+     * 更新状态
+     *
+     * @param kvmId
+     * @param status
+     */
+    public void updateDevStatus(Integer kvmId, int status) {
+        UpdateKvmDevStatusCondition condition = new UpdateKvmDevStatusCondition(kvmId, status);
+        kvmMapper.updateDevStatus(condition);
+    }
 }

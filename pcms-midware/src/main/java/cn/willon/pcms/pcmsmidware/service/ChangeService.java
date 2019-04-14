@@ -9,8 +9,10 @@ import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
 import cn.willon.pcms.pcmsmidware.mapper.ChangeMapper;
 import cn.willon.pcms.pcmsmidware.mapper.KvmMapper;
+import cn.willon.pcms.pcmsmidware.mapper.condition.QueryChangeProjectPermCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.SaveUserChangeCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.SaveUserKvmCondition;
+import cn.willon.pcms.pcmsmidware.mapper.condition.UpdatePubStatusCondition;
 import com.google.common.collect.Sets;
 import org.springframework.stereotype.Service;
 
@@ -144,5 +146,26 @@ public class ChangeService {
         User user = changeMapper.findOwner(changeId);
         return user;
 
+    }
+
+
+    public boolean hasProjectPublishPermission(Integer projectId, Integer changeId) {
+        QueryChangeProjectPermCondition condition = new QueryChangeProjectPermCondition();
+        condition.setProjectId(projectId);
+        condition.setChangeId(changeId);
+        int i = changeMapper.hasProjectPublishPermission(condition);
+        return i > 0;
+    }
+
+    public void updateProjectStatus(Integer changeId, Integer projectId, Integer status) {
+        UpdatePubStatusCondition condition = new UpdatePubStatusCondition();
+        condition.setChangeId(changeId);
+        condition.setProjectId(projectId);
+        condition.setPubStatus(status);
+        changeMapper.updateProjectStatus(condition);
+    }
+
+    public String getPublishProjectIp(Integer changeId, Integer projectId) {
+        return changeMapper.findPublishProjectIP(changeId, projectId);
     }
 }
