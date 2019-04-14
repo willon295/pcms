@@ -1,10 +1,13 @@
 package cn.willon.pcms.pcmsmidware.service;
 
 import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
+import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
+import cn.willon.pcms.pcmsmidware.domain.constrains.PubStatusEnums;
 import cn.willon.pcms.pcmsmidware.executor.DeployBashExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 
 /**
  * DeployService
@@ -16,7 +19,7 @@ import javax.annotation.Resource;
 public class DeployService {
 
 
-    public static final String MASTER = "master";
+    private static final String MASTER = "master";
     @Resource
     DeployBashExecutor deployBashExecutor;
 
@@ -37,6 +40,7 @@ public class DeployService {
     public void deploy(String hostname, String branchName) {
 
         Kvm kvm = kvmService.findByHostname(hostname);
+        Integer kvmId = kvm.getKvmId();
         Integer changeId = kvm.getChangeId();
         Integer projectId = kvm.getProjectId();
         String projectName = kvm.getProjectName();
@@ -46,7 +50,21 @@ public class DeployService {
         } else {
             ip = kvm.getIp();
         }
-        deployBashExecutor.scpFile(ip, projectName);
-        deployBashExecutor.remoteDeploy(ip, projectName);
+        // 远程拷贝并且部署App
+        try {
+            deployBashExecutor.scpFile(ip, projectName);
+            deployBashExecutor.remoteDeploy(ip, projectName);
+        } catch (IOException e) {
+            if (MASTER.equals(branchName)) {
+                changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.DEPLOY_FAIL.getStatus());
+            } else {
+                kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOY_FAIL.getStatus());
+            }
+        }
+        if (MASTER.equals(branchName)) {
+            changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.RUNNING.getStatus());
+        } else {
+            kvmService.updateDevStatus(kvmId, DevStatusEnums.RUNNING.getStatus());
+        }
     }
 }

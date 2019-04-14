@@ -80,7 +80,7 @@
           and uc.is_owner = 1;
     </select>
 
-    <select id="hasProjectPublishPermission">
+    <select id="hasProjectPublishPermission" resultType="java.lang.Integer">
         select count(1)
         from project
         where project_id = #{projectId}
