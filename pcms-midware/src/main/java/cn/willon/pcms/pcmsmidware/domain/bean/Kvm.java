@@ -59,11 +59,26 @@ public class Kvm implements Serializable {
      */
     private Integer devStatus;
 
+
+
+
+    /**
+     * 创建时间(时间戳)
+     * isNullAble:1
+     */
+    private Long createDate;
+
+    /**
+     * 销毁时间(时间戳)
+     * isNullAble:1
+     */
+    private Long expireDate;
     /**
      * 所属变更id
      * isNullAble:1
      */
     private Integer changeId;
+
 
     /**
      * 扩展字段

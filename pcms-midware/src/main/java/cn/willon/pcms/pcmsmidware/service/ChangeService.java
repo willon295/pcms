@@ -81,6 +81,8 @@ public class ChangeService {
             kvm.setIp("");
             kvm.setDevStatus(DevStatusEnums.INSTALLING.getStatus());
             kvm.setChangeId(changeId);
+            kvm.setCreateDate(startTime);
+            kvm.setExpireDate(endTime);
             kvmMapper.save(kvm);
             List<Integer> developers = project.getDevelopers();
             // 保存kvm用户

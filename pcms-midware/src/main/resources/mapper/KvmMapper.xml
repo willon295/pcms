@@ -12,6 +12,8 @@
         ip,
         dev_status,
         change_id,
+        create_date,
+        expire_date,
         attribute,
         is_valid
     </sql>
@@ -24,6 +26,8 @@
         <result column="ip" property="ip"/>
         <result column="dev_status" property="devStatus"/>
         <result column="change_id" property="changeId"/>
+        <result column="create_date" property="createDate"/>
+        <result column="expire_date" property="expireDate"/>
         <result column="attribute" property="attribute"/>
         <result column="is_valid" property="isValid"/>
     </resultMap>
@@ -38,6 +42,8 @@
         <result column="change_id" property="changeId"/>
         <result column="attribute" property="attribute"/>
         <result column="is_valid" property="isValid"/>
+        <result column="create_date" property="createDate"/>
+        <result column="expire_date" property="expireDate"/>
         <collection property="users" ofType="cn.willon.pcms.pcmsmidware.mapper.domain.KvmUser">
             <result column="user_id" property="userId"/>
             <result column="username" property="username"/>
@@ -49,8 +55,15 @@
 
     <insert id="save" keyColumn="kvm_id" useGeneratedKeys="true" keyProperty="kvmId"
             parameterType="cn.willon.pcms.pcmsmidware.domain.bean.Kvm">
-        insert into kvm (hostname, project_id, project_name, ip, dev_status, change_id)
-        values (#{hostname}, #{projectId}, #{projectName}, #{ip}, #{devStatus}, #{changeId})
+        insert into kvm (hostname, project_id, project_name, ip, dev_status, change_id, create_date, expire_date)
+        values (#{hostname},
+                #{projectId},
+                #{projectName},
+                #{ip},
+                #{devStatus},
+                #{changeId},
+                #{createDate},
+                #{expireDate})
     </insert>
 
 
@@ -88,6 +101,8 @@
                k.project_name,
                k.attribute,
                k.dev_status,
+               k.create_date,
+               k.expire_date,
                uk.permission,
                u.user_id,
                u.username,
@@ -132,8 +147,8 @@
 
     <update id="updateDevStatus">
         update kvm
-        set  dev_status=#{devStatus}
-        where kvm_id=#{kvmId} ;
+        set dev_status = #{devStatus}
+        where kvm_id = #{kvmId};
     </update>
 
 </mapper>
