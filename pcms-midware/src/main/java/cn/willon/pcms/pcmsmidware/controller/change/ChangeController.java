@@ -107,6 +107,22 @@ public class ChangeController {
     @GetMapping("/change/{changeId}")
     public Result changeDetail(@PathVariable(name = "changeId") Integer changeId) {
 
+        return getChangeDetailVoResult(changeId);
+    }
+
+
+    /**
+     * 获取开发环境的变更新
+     *
+     * @param changeId 变更id
+     * @return 详情
+     */
+    @GetMapping("/change/dev/{changeId}")
+    public Result viewDevChange(@PathVariable Integer changeId) {
+        return getChangeDetailVoResult(changeId);
+    }
+
+    private Result getChangeDetailVoResult(@PathVariable Integer changeId) {
         ChangeKvmsDO ckdo = changeService.changeDetail(changeId);
         ChangeDetailVO changeDetailVO = new ChangeDetailVO();
         Changes change = ckdo.getChange();
@@ -132,6 +148,17 @@ public class ChangeController {
         return Result.successResult(changeDetailVO);
     }
 
+    /**
+     * 获取线上环境的变更新
+     *
+     * @param changeId 变更id
+     * @return 详情
+     */
+    @GetMapping("/change/publish/{changeId}")
+    public Result viewPublishChange(@PathVariable Integer changeId) {
+        return Result.successResult("");
+    }
+
 
     /**
      * // TODO 修改变更
@@ -145,6 +172,6 @@ public class ChangeController {
     public Result updateChange() {
 
 
-        return  null;
+        return null;
     }
 }

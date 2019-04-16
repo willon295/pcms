@@ -19,13 +19,13 @@ public enum DevStatusEnums {
 
     PACKGING(1, "打包中"),
 
-    DEPLOYING(2, "部署中"),
+    DEPLOYING(2, "打包失败"),
 
-    RUNNING(3, "运行中"),
+    RUNNING(3, "部署中"),
 
-    PACK_FAIL(4, "打包失败"),
+    PACK_FAIL(4, "部署失败"),
 
-    DEPLOY_FAIL(5, "部署失败"),
+    DEPLOY_FAIL(5, "运行中"),
 
     TEST_PASS(6, "测试通过"),
 
