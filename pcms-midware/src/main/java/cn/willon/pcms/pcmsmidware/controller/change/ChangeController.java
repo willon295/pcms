@@ -7,8 +7,8 @@ import cn.willon.pcms.pcmsmidware.domain.bo.ChangeKvmsDO;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
 import cn.willon.pcms.pcmsmidware.domain.vo.ChangeDetailVO;
 import cn.willon.pcms.pcmsmidware.domain.vo.ChangeVO;
+import cn.willon.pcms.pcmsmidware.domain.vo.DevVO;
 import cn.willon.pcms.pcmsmidware.domain.vo.KvmVO;
-import cn.willon.pcms.pcmsmidware.domain.vo.UserKvmsVO;
 import cn.willon.pcms.pcmsmidware.service.ChangeService;
 import cn.willon.pcms.pcmsmidware.service.GitlabService;
 import cn.willon.pcms.pcmsmidware.service.KvmService;
@@ -162,9 +162,22 @@ public class ChangeController {
             } else {
                 kv.setPermission(null);
             }
+            Instant createInstant = Instant.ofEpochMilli(k.getCreateDate());
+            LocalDateTime t1 = LocalDateTime.ofInstant(createInstant, ZoneId.systemDefault());
+            String createDate = String.format("%s-%s-%s", t1.getYear(), t1.getMonthValue(), t1.getDayOfMonth());
+
+            Instant expireInstant = Instant.ofEpochMilli(k.getExpireDate());
+            LocalDateTime t2 = LocalDateTime.ofInstant(expireInstant, ZoneId.systemDefault());
+            String expireDate = String.format("%s-%s-%s", t2.getYear(), t2.getMonthValue(), t2.getDayOfMonth());
+            kv.setCreateDate(createDate);
+            kv.setExpireDate(expireDate);
             return kv;
         }).collect(Collectors.toList());
-        return Result.successResult(all);
+
+        DevVO devVO = new DevVO();
+        devVO.setChangeName(change.getChangeName());
+        devVO.setKvms(all);
+        return Result.successResult(devVO);
     }
 
 
