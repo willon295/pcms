@@ -2,10 +2,8 @@ package cn.willon.pcms.pcmsmidware.controller.deploy;
 
 import cn.willon.pcms.pcmsmidware.service.DeployService;
 import cn.willon.pcms.pcmsmidware.service.PackService;
-import cn.willon.pcms.pcmsmidware.util.Result;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -27,19 +25,6 @@ public class PackDeployController {
     @Resource
     DeployService deployService;
 
-    /**
-     * 打包
-     *
-     * @param hostname   主机名
-     * @param branchName 分支名
-     * @param env        环境
-     */
-    @GetMapping("/pack/{hostname}/{branchName}")
-    public Result pack(@PathVariable String hostname, @PathVariable String branchName, @RequestParam(name = "env") Integer env) {
-        boolean pack = packService.pack(hostname, branchName, env);
-        return Result.successResult(pack);
-    }
-
 
     /**
      * 部署
@@ -47,8 +32,9 @@ public class PackDeployController {
      * @param hostname   主机名
      * @param branchName 分支名
      */
-    @GetMapping("/deploy{hostname}/{branchName}")
-    public void deploy(@PathVariable String hostname, @PathVariable String branchName) {
+    @GetMapping("/deploy/{hostname}/{branchName}/{env}")
+    public void deploy(@PathVariable String hostname, @PathVariable String branchName, @PathVariable Integer env) {
+        packService.pack(hostname, branchName, env);
         deployService.deploy(hostname, branchName);
     }
 }

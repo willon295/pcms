@@ -1,5 +1,6 @@
 package cn.willon.pcms.pcmsmidware.executor;
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +39,7 @@ public class DeployBashExecutor {
         cmds.add("/usr/bin/scp  " + gzFile + "  root@" + ip + ":/opt/app/ ");
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command(cmds);
+        log.info(String.format("scp命令： {command: %s}", JSON.toJSONString(cmds)));
         processBuilder.start();
     }
 
@@ -55,6 +57,7 @@ public class DeployBashExecutor {
         cmds.add("/usr/bin/ssh  root@" + ip + " 'tar zxf  *.gz -C /opt/app/;  cd  /opt/app/" + projectName + "   ;  nohup java -server -Xms256m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 -jar  /opt/app/" + projectName + "/*.jar  >> `date +%Y%m%d`.log & '");
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command(cmds);
+        log.info(String.format("远程部署命令： {command: %s}", JSON.toJSONString(cmds)));
         processBuilder.start();
     }
 }

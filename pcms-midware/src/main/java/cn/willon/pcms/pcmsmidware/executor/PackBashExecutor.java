@@ -1,5 +1,6 @@
 package cn.willon.pcms.pcmsmidware.executor;
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +39,7 @@ public class PackBashExecutor {
         cmds.add(GIT_SHELL + " clone -b " + branchName + " " + gitUrl + " " + TMP_DIR + projectName);
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command(cmds);
+        log.info(String.format("Git命令： {command: %s}", JSON.toJSONString(cmds)));
         try {
             processBuilder.start();
             return true;
@@ -57,9 +59,10 @@ public class PackBashExecutor {
         ArrayList<String> cmds = new ArrayList<>();
         cmds.add("sh");
         cmds.add("-c");
-        cmds.add("cd " + TMP_DIR + projectName + ";" + MVN_SHELL + " package -P" + env);
+        cmds.add("cd " + TMP_DIR + projectName + ";" + MVN_SHELL + " package -P" + env +"  --settings /usr/local/lib/maven-3.5/conf/settings.xml");
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command(cmds);
+        log.info(String.format("mvn命令： {command: %s}", JSON.toJSONString(cmds)));
         try {
             processBuilder.start();
             return true;
@@ -83,6 +86,8 @@ public class PackBashExecutor {
         cmds.add("cd " + TMP_DIR + projectName + ";" + GIT_SHELL + " merge " + branchName);
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command(cmds);
+        log.info(String.format("GitMerge命令： {command: %s}", JSON.toJSONString(cmds)));
+
         try {
             processBuilder.start();
             return true;
@@ -104,6 +109,7 @@ public class PackBashExecutor {
         cmds.add("cd " + TMP_DIR + projectName + "; mv *.gz  " + TMP_DIR + "; rm -rf " + TMP_DIR + projectName);
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command(cmds);
+        log.info(String.format("移动文件命令： {command: %s}", JSON.toJSONString(cmds)));
         try {
             processBuilder.start();
             return true;
