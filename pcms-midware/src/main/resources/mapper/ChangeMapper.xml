@@ -37,8 +37,8 @@
 
     <insert id="save" useGeneratedKeys="true" keyProperty="changeId"
             parameterType="cn.willon.pcms.pcmsmidware.domain.bean.Changes">
-        insert into changes (change_name, branch_name)
-        values (#{changeName}, #{branchName});
+        insert into changes (change_name, branch_name,create_date,expire_date)
+        values (#{changeName}, #{branchName},#{createDate},#{expireDate});
     </insert>
 
     <select id="findByChangeId" resultMap="changeWithKvmIdResultMap">

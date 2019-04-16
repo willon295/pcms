@@ -39,10 +39,12 @@ public class ControllerTest {
 
 
     @Test
-    public void testChangeController() throws Exception {
+    public void testGetChangeController() throws Exception {
         String result = mockMvc.perform(get("/change/28")).andDo(print()).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
         System.out.println(result);
 
     }
+
+
 }
