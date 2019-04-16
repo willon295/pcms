@@ -8,6 +8,4 @@ package cn.willon.pcms.pcmsmidware.domain.constrains;
  */
 public interface EnvType {
 
-    int DEV = 1;
-    int PUBLISH = 2;
 }

@@ -52,9 +52,8 @@ public class DeployService {
         }
         // 远程拷贝并且部署App
         try {
-            deployBashExecutor.scpFile(ip, projectName);
-            deployBashExecutor.remoteDeploy(ip, projectName);
-        } catch (IOException e) {
+            deployBashExecutor.deploy(projectName, branchName, ip);
+        } catch (Exception e) {
             if (MASTER.equals(branchName)) {
                 changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.DEPLOY_FAIL.getStatus());
             } else {
@@ -67,4 +66,5 @@ public class DeployService {
             kvmService.updateDevStatus(kvmId, DevStatusEnums.RUNNING.getStatus());
         }
     }
+
 }

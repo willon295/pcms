@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -19,102 +18,28 @@ import java.util.ArrayList;
 public class PackBashExecutor {
 
 
-    private static final String GIT_SHELL = "/usr/bin/git";
-    private static final String MVN_SHELL = "/usr/local/lib/maven-3.5/bin/mvn";
     private static final String TMP_DIR = "/root/tmp/";
-
+    private static final String PACK = "/root/tmp/pack.sh";
 
     /**
-     * 拉代码
-     *
-     * @param gitUrl     git地址
-     * @param branchName 分支
-     * @return 是否获取成功
+     * ./pack.sh  br7  git@10.0.0.11:member/interest.git   interest  dev
      */
-    public boolean gitClone(String gitUrl, String branchName, String projectName) {
+    public void pack(String branchName, String gitUrl, String projectName, String env) {
 
+        String file = TMP_DIR + "/pkg/" + projectName + branchName + ".tar.gz";
         ArrayList<String> cmds = new ArrayList<>();
         cmds.add("sh");
         cmds.add("-c");
-        cmds.add(GIT_SHELL + " clone -b " + branchName + " " + gitUrl + " " + TMP_DIR + projectName);
+        String sb = PACK + " " +
+                branchName + " " +
+                gitUrl + " " +
+                projectName + " " +
+                env;
+        cmds.add(sb);
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command(cmds);
-        log.info(String.format("Git命令： {command: %s}", JSON.toJSONString(cmds)));
-        try {
-            processBuilder.start();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
-    /**
-     * 打包文件
-     *
-     * @param projectName 工程名
-     * @param env         环境
-     * @return 是否成功
-     */
-    public boolean mvnPackage(String projectName, String env) {
-        ArrayList<String> cmds = new ArrayList<>();
-        cmds.add("sh");
-        cmds.add("-c");
-        cmds.add("cd " + TMP_DIR + projectName + ";" + MVN_SHELL + " package -P" + env +"  --settings /usr/local/lib/maven-3.5/conf/settings.xml");
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command(cmds);
-        log.info(String.format("mvn命令： {command: %s}", JSON.toJSONString(cmds)));
-        try {
-            processBuilder.start();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+        log.info(String.format("打包文件： {command: %s ， 输出文件：%s }", JSON.toJSONString(cmds), file));
     }
 
 
-    /**
-     * 合并分支
-     *
-     * @param projectName 工程名
-     * @param branchName  分支
-     * @return 是否成功
-     */
-    public boolean gitMerge(String projectName, String branchName) {
-        ArrayList<String> cmds = new ArrayList<>();
-        cmds.add("sh");
-        cmds.add("-c");
-        cmds.add("cd " + TMP_DIR + projectName + ";" + GIT_SHELL + " merge " + branchName);
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command(cmds);
-        log.info(String.format("GitMerge命令： {command: %s}", JSON.toJSONString(cmds)));
-
-        try {
-            processBuilder.start();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
-    /**
-     * 移动压缩包，并且清空缓存
-     *
-     * @param projectName
-     * @return
-     */
-    public boolean movePackageAndRemoveTmp(String projectName) {
-        ArrayList<String> cmds = new ArrayList<>();
-        cmds.add("sh");
-        cmds.add("-c");
-        cmds.add("cd " + TMP_DIR + projectName + "; mv *.gz  " + TMP_DIR + "; rm -rf " + TMP_DIR + projectName);
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command(cmds);
-        log.info(String.format("移动文件命令： {command: %s}", JSON.toJSONString(cmds)));
-        try {
-            processBuilder.start();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
 }

@@ -40,40 +40,8 @@ public class PackService {
     @Resource
     ChangeService changeService;
 
-
-    private void packDev(String hostname, String branchName) throws IOException {
-        Kvm kvm = kvmService.findByHostname(hostname);
-        Integer projectId = kvm.getProjectId();
-        GitlabProject project = gitlabAPI.getProject(projectId);
-        String projectName = project.getName();
-        String sshUrl = project.getSshUrl();
-        packBashExecutor.gitClone(sshUrl, branchName, projectName);
-        packBashExecutor.mvnPackage(projectName, DEV);
-        packBashExecutor.movePackageAndRemoveTmp(projectName);
-    }
-
-
-    private void packPub(String hostname, String branchName) throws IOException {
-        Kvm kvm = kvmService.findByHostname(hostname);
-        Integer changeId = kvm.getChangeId();
-        Integer projectId = kvm.getProjectId();
-        GitlabProject project = gitlabAPI.getProject(projectId);
-        String projectName = project.getName();
-        String sshUrl = project.getSshUrl();
-        // 判断是否有权限
-        if (changeService.hasProjectPublishPermission(projectId, changeId)) {
-            packBashExecutor.gitClone(sshUrl, MASTER, projectName);
-            packBashExecutor.gitMerge(projectName, branchName);
-            packBashExecutor.mvnPackage(projectName, PUBLISH);
-            packBashExecutor.movePackageAndRemoveTmp(projectName);
-        } else {
-            log.error("没有操作权限");
-        }
-    }
-
-
-    public boolean pack(String hostname, String branchName, Integer env) {
-        if (env.equals(EnvType.DEV)) {
+    public boolean pack(String hostname, String branchName, String env) {
+        if (DEV.equals(env)) {
             try {
                 packDev(hostname, branchName);
                 return true;
@@ -83,7 +51,7 @@ public class PackService {
                 return false;
             }
 
-        } else if (env.equals(EnvType.PUBLISH)) {
+        } else if (PUBLISH.equals(env)) {
             try {
                 packPub(hostname, branchName);
                 return true;
@@ -98,4 +66,31 @@ public class PackService {
         return false;
 
     }
+
+    private void packDev(String hostname, String branchName) throws IOException {
+        Kvm kvm = kvmService.findByHostname(hostname);
+        Integer projectId = kvm.getProjectId();
+        GitlabProject project = gitlabAPI.getProject(projectId);
+        String projectName = project.getName();
+        String sshUrl = project.getSshUrl();
+        packBashExecutor.pack(branchName, sshUrl, projectName, DEV);
+    }
+
+
+    private void packPub(String hostname, String branchName) throws IOException {
+        Kvm kvm = kvmService.findByHostname(hostname);
+        Integer changeId = kvm.getChangeId();
+        Integer projectId = kvm.getProjectId();
+        GitlabProject project = gitlabAPI.getProject(projectId);
+        String projectName = project.getName();
+        String sshUrl = project.getSshUrl();
+        // 判断是否有权限
+        if (changeService.hasProjectPublishPermission(projectId, changeId)) {
+            packBashExecutor.pack(branchName, sshUrl, projectName, PUBLISH);
+        } else {
+            log.error("没有操作权限");
+        }
+    }
+
+
 }
