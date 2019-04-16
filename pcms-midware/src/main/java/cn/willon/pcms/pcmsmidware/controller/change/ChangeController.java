@@ -7,6 +7,8 @@ import cn.willon.pcms.pcmsmidware.domain.bo.ChangeKvmsDO;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
 import cn.willon.pcms.pcmsmidware.domain.vo.ChangeDetailVO;
 import cn.willon.pcms.pcmsmidware.domain.vo.ChangeVO;
+import cn.willon.pcms.pcmsmidware.domain.vo.KvmVO;
+import cn.willon.pcms.pcmsmidware.domain.vo.UserKvmsVO;
 import cn.willon.pcms.pcmsmidware.service.ChangeService;
 import cn.willon.pcms.pcmsmidware.service.GitlabService;
 import cn.willon.pcms.pcmsmidware.service.KvmService;
@@ -14,6 +16,7 @@ import cn.willon.pcms.pcmsmidware.service.UserService;
 import cn.willon.pcms.pcmsmidware.util.Result;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -23,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -107,22 +111,6 @@ public class ChangeController {
     @GetMapping("/change/{changeId}")
     public Result changeDetail(@PathVariable(name = "changeId") Integer changeId) {
 
-        return getChangeDetailVoResult(changeId);
-    }
-
-
-    /**
-     * 获取开发环境的变更新
-     *
-     * @param changeId 变更id
-     * @return 详情
-     */
-    @GetMapping("/change/dev/{changeId}")
-    public Result viewDevChange(@PathVariable Integer changeId) {
-        return getChangeDetailVoResult(changeId);
-    }
-
-    private Result getChangeDetailVoResult(@PathVariable Integer changeId) {
         ChangeKvmsDO ckdo = changeService.changeDetail(changeId);
         ChangeDetailVO changeDetailVO = new ChangeDetailVO();
         Changes change = ckdo.getChange();
@@ -147,6 +135,38 @@ public class ChangeController {
 
         return Result.successResult(changeDetailVO);
     }
+
+
+    /**
+     * 获取开发环境的变更新
+     *
+     * @param changeId 变更id
+     * @return 详情
+     */
+    @GetMapping("/change/dev/{changeId}")
+    public Result viewDevChange(@PathVariable Integer changeId, @RequestParam(name = "userId") Integer userId) {
+        // 获取当前变更   所有kvm
+        Changes change = changeService.findChangeWithKvmIds(changeId);
+        List<Integer> kvmIds = change.getKvmIds();
+        List<Kvm> kvms = kvmService.findKvmByIds(kvmIds);
+        // 获取用户拥有权限的kvm
+        List<Kvm> hasPermissionKvms = kvmService.findHasPermissionKvms(changeId, userId);
+        Map<Integer, Kvm> map = hasPermissionKvms.stream().collect(Collectors.toMap(Kvm::getKvmId, k -> k));
+
+        // 合并
+        List<KvmVO> all = kvms.stream().map(k -> {
+            KvmVO kv = new KvmVO();
+            BeanUtils.copyProperties(k, kv);
+            if (map.containsKey(k.getKvmId())) {
+                kv.setPermission("all");
+            } else {
+                kv.setPermission(null);
+            }
+            return kv;
+        }).collect(Collectors.toList());
+        return Result.successResult(all);
+    }
+
 
     /**
      * 获取线上环境的变更新

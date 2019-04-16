@@ -4,6 +4,7 @@ import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.executor.KvmBashExecutor;
 import cn.willon.pcms.pcmsmidware.mapper.KvmMapper;
+import cn.willon.pcms.pcmsmidware.mapper.condition.QueryHasPermissionKvmCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.UpdateKvmDevStatusCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.UpdateKvmIpCondition;
 import cn.willon.pcms.pcmsmidware.thred.ThreadPoolManager;
@@ -150,5 +151,20 @@ public class KvmService {
     public void updateDevStatus(Integer kvmId, int status) {
         UpdateKvmDevStatusCondition condition = new UpdateKvmDevStatusCondition(kvmId, status);
         kvmMapper.updateDevStatus(condition);
+    }
+
+    /**
+     * 获取当前分支用户拥有权限的kvm
+     *
+     * @param changeId
+     * @param userId
+     * @return
+     */
+    public List<Kvm> findHasPermissionKvms(Integer changeId, Integer userId) {
+        QueryHasPermissionKvmCondition condition = new QueryHasPermissionKvmCondition();
+        condition.setUserId(userId);
+        condition.setChangeId(changeId);
+        List<Kvm> hasPermissionKvm = kvmMapper.findHasPermissionKvm(condition);
+        return hasPermissionKvm;
     }
 }

@@ -1,10 +1,10 @@
 package cn.willon.pcms.pcmsmidware.mapper;
 
 import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
+import cn.willon.pcms.pcmsmidware.mapper.condition.QueryHasPermissionKvmCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.SaveUserKvmCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.UpdateKvmDevStatusCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.UpdateKvmIpCondition;
-import cn.willon.pcms.pcmsmidware.mapper.domain.KvmUser;
 
 import java.util.List;
 
@@ -71,4 +71,6 @@ public interface KvmMapper {
      * @param condition 参数条件
      */
     void updateDevStatus(UpdateKvmDevStatusCondition condition);
+
+    List<Kvm> findHasPermissionKvm(QueryHasPermissionKvmCondition condition);
 }

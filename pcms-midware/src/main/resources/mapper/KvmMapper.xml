@@ -50,8 +50,9 @@
             <result column="real_name" property="realName"/>
             <result column="permission" property="permission"/>
         </collection>
-
     </resultMap>
+
+
 
     <insert id="save" keyColumn="kvm_id" useGeneratedKeys="true" keyProperty="kvmId"
             parameterType="cn.willon.pcms.pcmsmidware.domain.bean.Kvm">
@@ -150,5 +151,22 @@
         set dev_status = #{devStatus}
         where kvm_id = #{kvmId};
     </update>
+
+
+    <select id="findHasPermissionKvm" resultMap="allColKvmResultMap"
+            parameterType="cn.willon.pcms.pcmsmidware.mapper.condition.QueryHasPermissionKvmCondition">
+        select k.kvm_id,
+               k.ip,
+               k.hostname,
+               k.create_date,
+               k.expire_date,
+               k.dev_status,
+               k.project_id,
+               k.project_name
+        from kvm k
+                 left join user_kvm uk on k.kvm_id = uk.kvm_id
+        where k.change_id = #{changeId}
+          and uk.user_id = #{userId};
+    </select>
 
 </mapper>
