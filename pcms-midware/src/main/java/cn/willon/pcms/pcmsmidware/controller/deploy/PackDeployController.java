@@ -34,7 +34,9 @@ public class PackDeployController {
      */
     @GetMapping("/deploy/{hostname}/{branchName}/{env}")
     public void deploy(@PathVariable String hostname, @PathVariable String branchName, @PathVariable Integer env) {
-        packService.pack(hostname, branchName, env);
-        deployService.deploy(hostname, branchName);
+        boolean pack = packService.pack(hostname, branchName, env);
+        if (pack) {
+            deployService.deploy(hostname, branchName);
+        }
     }
 }
