@@ -15,6 +15,5 @@ import java.util.List;
 public class DevVO implements Serializable {
 
     private String changeName;
-    private String branchName;
     private List<KvmVO> kvms;
 }

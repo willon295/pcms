@@ -17,6 +17,7 @@ public class KvmVO implements Serializable {
     private String hostname;
     private Integer projectId;
     private String projectName;
+    private String branchName;
     private String ip;
     private Integer devStatus;
     private String createDate;

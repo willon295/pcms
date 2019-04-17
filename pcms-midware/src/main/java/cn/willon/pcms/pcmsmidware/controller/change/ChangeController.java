@@ -149,6 +149,7 @@ public class ChangeController {
         Changes change = changeService.findChangeWithKvmIds(changeId);
         List<Integer> kvmIds = change.getKvmIds();
         List<Kvm> kvms = kvmService.findKvmByIds(kvmIds);
+        String branchName = change.getBranchName();
         // 获取用户拥有权限的kvm
         List<Kvm> hasPermissionKvms = kvmService.findHasPermissionKvms(changeId, userId);
         Map<Integer, Kvm> map = hasPermissionKvms.stream().collect(Collectors.toMap(Kvm::getKvmId, k -> k));
@@ -171,12 +172,11 @@ public class ChangeController {
             String expireDate = String.format("%s-%s-%s", t2.getYear(), t2.getMonthValue(), t2.getDayOfMonth());
             kv.setCreateDate(createDate);
             kv.setExpireDate(expireDate);
+            kv.setBranchName(branchName);
             return kv;
         }).collect(Collectors.toList());
 
         DevVO devVO = new DevVO();
-        String branchName = change.getBranchName();
-        devVO.setBranchName(branchName);
         devVO.setChangeName(change.getChangeName());
         devVO.setKvms(all);
         return Result.successResult(devVO);
