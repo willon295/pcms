@@ -4,6 +4,7 @@ import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.constrains.PubStatusEnums;
 import cn.willon.pcms.pcmsmidware.executor.DeployBashExecutor;
+import cn.willon.pcms.pcmsmidware.util.ServerUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -38,7 +39,7 @@ public class DeployService {
      * @param hostname   主机名
      * @param branchName 分支名
      */
-    public void deploy(String hostname, String branchName) {
+    public boolean deploy(String hostname, String branchName) {
 
         Kvm kvm = kvmService.findByHostname(hostname);
         Integer kvmId = kvm.getKvmId();
@@ -60,11 +61,12 @@ public class DeployService {
             } else {
                 kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOY_FAIL.getStatus());
             }
+            return false;
         }
 
 
         // 检查是否有部署成功
-        boolean run = deployBashExecutor.isReachable(ip, TOMCAT_PORT, TIMEOUT);
+        boolean run = ServerUtil.isReachable(ip, TOMCAT_PORT, TIMEOUT);
 
         if (run) {
             if (MASTER.equals(branchName)) {
@@ -72,6 +74,7 @@ public class DeployService {
             } else {
                 kvmService.updateDevStatus(kvmId, DevStatusEnums.RUNNING.getStatus());
             }
+            return true;
         } else {
             if (MASTER.equals(branchName)) {
                 changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.DEPLOY_FAIL.getStatus());
@@ -79,6 +82,7 @@ public class DeployService {
                 kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOY_FAIL.getStatus());
             }
 
+            return false;
         }
     }
 

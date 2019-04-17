@@ -3,6 +3,7 @@ package cn.willon.pcms.pcmsmidware.controller.deploy;
 import cn.willon.pcms.pcmsmidware.domain.DeployCondition;
 import cn.willon.pcms.pcmsmidware.service.DeployService;
 import cn.willon.pcms.pcmsmidware.service.PackService;
+import cn.willon.pcms.pcmsmidware.util.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,13 +32,20 @@ public class PackDeployController {
      * 部署
      */
     @PostMapping("/deploy")
-    public void deploy(@RequestBody DeployCondition deployCondition) {
+    public Result deploy(@RequestBody DeployCondition deployCondition) {
         String hostname = deployCondition.getHostname();
         String branchName = deployCondition.getBranchName();
         String env = deployCondition.getEnv();
         boolean pack = packService.pack(hostname, branchName, env);
+        boolean deploySuccess = false;
         if (pack) {
-            deployService.deploy(hostname, branchName);
+            deploySuccess = deployService.deploy(hostname, branchName);
         }
+        if (deploySuccess) {
+            return Result.successResult("success");
+        } else {
+            return Result.failResult("fail");
+        }
+
     }
 }
