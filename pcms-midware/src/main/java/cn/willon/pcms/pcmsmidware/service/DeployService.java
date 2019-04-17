@@ -7,7 +7,6 @@ import cn.willon.pcms.pcmsmidware.executor.DeployBashExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 
 /**
  * DeployService
@@ -19,7 +18,9 @@ import java.io.IOException;
 public class DeployService {
 
 
+    private static final String TOMCAT_PORT = "8080";
     private static final String MASTER = "master";
+    private static final int TIMEOUT = 10;
     @Resource
     DeployBashExecutor deployBashExecutor;
 
@@ -60,10 +61,24 @@ public class DeployService {
                 kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOY_FAIL.getStatus());
             }
         }
-        if (MASTER.equals(branchName)) {
-            changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.RUNNING.getStatus());
+
+
+        // 检查是否有部署成功
+        boolean run = deployBashExecutor.isReachable(ip, TOMCAT_PORT, TIMEOUT);
+
+        if (run) {
+            if (MASTER.equals(branchName)) {
+                changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.RUNNING.getStatus());
+            } else {
+                kvmService.updateDevStatus(kvmId, DevStatusEnums.RUNNING.getStatus());
+            }
         } else {
-            kvmService.updateDevStatus(kvmId, DevStatusEnums.RUNNING.getStatus());
+            if (MASTER.equals(branchName)) {
+                changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.DEPLOY_FAIL.getStatus());
+            } else {
+                kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOY_FAIL.getStatus());
+            }
+
         }
     }
 

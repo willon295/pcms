@@ -15,17 +15,18 @@ public enum DevStatusEnums {
      */
     INSTALLING(-1, "环境创建中"),
 
+    // DEPLOY_FAIL
     PENDING(0, "待操作"),
 
     PACKGING(1, "打包中"),
 
-    DEPLOYING(2, "打包失败"),
+    PACK_FAIL(2, "打包失败"),
 
-    RUNNING(3, "部署中"),
+    DEPLOYING(3, "部署中"),
 
-    PACK_FAIL(4, "部署失败"),
+    DEPLOY_FAIL(4, "部署失败"),
 
-    DEPLOY_FAIL(5, "运行中"),
+    RUNNING(5, "运行中"),
 
     TEST_PASS(6, "测试通过"),
 
