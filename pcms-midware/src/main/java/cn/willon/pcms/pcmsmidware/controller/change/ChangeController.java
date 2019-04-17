@@ -175,6 +175,8 @@ public class ChangeController {
         }).collect(Collectors.toList());
 
         DevVO devVO = new DevVO();
+        String branchName = change.getBranchName();
+        devVO.setBranchName(branchName);
         devVO.setChangeName(change.getChangeName());
         devVO.setKvms(all);
         return Result.successResult(devVO);
