@@ -3,6 +3,7 @@ package cn.willon.pcms.pcmsmidware.controller.deploy;
 import cn.willon.pcms.pcmsmidware.domain.DeployCondition;
 import cn.willon.pcms.pcmsmidware.service.DeployService;
 import cn.willon.pcms.pcmsmidware.service.PackService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -14,6 +15,8 @@ import javax.annotation.Resource;
  * @author Willon
  * @since 2019-04-14
  */
+@Slf4j
+@CrossOrigin(allowedHeaders = "*", maxAge = 3600)
 @RestController
 public class PackDeployController {
 
