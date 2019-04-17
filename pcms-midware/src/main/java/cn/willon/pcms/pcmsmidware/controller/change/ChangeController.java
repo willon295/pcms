@@ -4,6 +4,7 @@ import cn.willon.pcms.pcmsmidware.domain.bean.Changes;
 import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
 import cn.willon.pcms.pcmsmidware.domain.bean.Project;
 import cn.willon.pcms.pcmsmidware.domain.bo.ChangeKvmsDO;
+import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
 import cn.willon.pcms.pcmsmidware.domain.vo.ChangeDetailVO;
 import cn.willon.pcms.pcmsmidware.domain.vo.ChangeVO;
@@ -192,6 +193,17 @@ public class ChangeController {
     @GetMapping("/change/publish/{changeId}")
     public Result viewPublishChange(@PathVariable Integer changeId) {
         return Result.successResult("");
+    }
+
+
+    /**
+     * 开发环境测试通过
+     */
+    @PutMapping("/testPass/{hostname}")
+    public Result devTestPass(@PathVariable String hostname) {
+        Kvm kvm = kvmService.findByHostname(hostname);
+        kvmService.updateDevStatus(kvm.getKvmId(), DevStatusEnums.TEST_PASS.getStatus());
+        return Result.successResult("ok");
     }
 
 

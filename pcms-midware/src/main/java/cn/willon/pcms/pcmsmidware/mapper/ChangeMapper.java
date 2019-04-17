@@ -57,6 +57,7 @@ public interface ChangeMapper {
      */
     int hasProjectPublishPermission(QueryChangeProjectPermCondition condition);
 
+
     void updateProjectStatus(UpdatePubStatusCondition condition);
 
     String findPublishProjectIP(Integer changeId, Integer projectId);
