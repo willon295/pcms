@@ -11,7 +11,7 @@ public enum PubStatusEnums {
     /**
      * 各种状态
      */
-    INSTALLING(-1, "环境创建中"),
+    WATING_CHECK(-1, "等待审核"),
 
     PENDING(0, "待操作"),
 

@@ -1,5 +1,6 @@
 package cn.willon.pcms.pcmsmidware.service;
 
+import cn.willon.pcms.pcmsmidware.domain.DeployCondition;
 import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.constrains.PubStatusEnums;
@@ -35,12 +36,10 @@ public class DeployService {
 
     /**
      * 部署
-     *
-     * @param hostname   主机名
-     * @param branchName 分支名
      */
-    public boolean deploy(String hostname, String branchName) {
-
+    public boolean deploy(DeployCondition condition) {
+        String hostname = condition.getHostname();
+        String branchName = condition.getBranchName();
         Kvm kvm = kvmService.findByHostname(hostname);
         Integer kvmId = kvm.getKvmId();
         Integer changeId = kvm.getChangeId();
@@ -63,7 +62,6 @@ public class DeployService {
             }
             return false;
         }
-
 
         // 检查是否有部署成功
         boolean run = ServerUtil.isReachable(ip, TOMCAT_PORT, TIMEOUT);

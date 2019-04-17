@@ -35,10 +35,28 @@
         </collection>
     </resultMap>
 
+
+    <resultMap id="projectDOResultMap" type="cn.willon.pcms.pcmsmidware.domain.bo.ProjectDO">
+        <id column="id" property="id"/>
+        <result column="projectId" property="projectId"/>
+        <result column="project_name" property="projectName"/>
+        <result column="cur_change_id" property="curChangeId"/>
+        <result column="pub_status" property="pubStatus"/>
+        <result column="server_ip" property="serverIp"/>
+    </resultMap>
+
+    <resultMap id="pubCheckResultMap" type="cn.willon.pcms.pcmsmidware.domain.bean.PubCheck">
+        <id column="check_id" property="checkId"/>
+        <result column="check_apply_user_id" property="checkApplyUserId"/>
+        <result column="check_receive_user_id" property="checkReceiveUserId"/>
+        <result column="check_change_id" property="checkChangeId"/>
+        <result column="check_status" property="checkStatus"/>
+    </resultMap>
+
     <insert id="save" useGeneratedKeys="true" keyProperty="changeId"
             parameterType="cn.willon.pcms.pcmsmidware.domain.bean.Changes">
-        insert into changes (change_name, branch_name,create_date,expire_date)
-        values (#{changeName}, #{branchName},#{createDate},#{expireDate});
+        insert into changes (change_name, branch_name, create_date, expire_date)
+        values (#{changeName}, #{branchName}, #{createDate}, #{expireDate});
     </insert>
 
     <select id="findByChangeId" resultMap="changeWithKvmIdResultMap">
@@ -80,6 +98,7 @@
           and uc.is_owner = 1;
     </select>
 
+    <!--project相关-->
     <select id="hasProjectPublishPermission" resultType="java.lang.Integer">
         select count(1)
         from project
@@ -99,5 +118,51 @@
         from project
         where project_id = #{projectId}
           and cur_change_id = #{changeId};
+    </select>
+
+    <select id="findHoldPublishChangeId" resultType="java.lang.Integer">
+        select cur_change_id
+        from project
+        where project_name = #{projectName};
+    </select>
+    <update id="holdPublish" parameterType="cn.willon.pcms.pcmsmidware.mapper.condition.HoldPublishCondition">
+        update project
+        set cur_change_id = #{changeId}
+        where project_name = #{projectName};
+    </update>
+
+    <!--审核相关-->
+    <insert id="savePubCheck" parameterType="cn.willon.pcms.pcmsmidware.domain.bean.PubCheck">
+        insert into pub_check (check_apply_user_id, check_receive_user_id, check_change_id)
+        values (#{checkApplyUserId}, #{checkReceiveUserId}, #{checkChangeId});
+    </insert>
+    <update id="denyPubCheck">
+        update pub_check
+        set check_status = 0
+        where check_id = #{checkId};
+    </update>
+    <delete id="accessPubCheck">
+        delete
+        from pub_check
+        where check_id = #{checkId};
+    </delete>
+    <select id="findPublishProjectByName" resultMap="projectDOResultMap">
+        select *
+        from project
+        where project_name = #{projectName};
+    </select>
+    <select id="findUserSendPubCheck" resultMap="pubCheckResultMap"
+            parameterType="cn.willon.pcms.pcmsmidware.mapper.condition.QueryUserSendPubCheckCondition">
+
+        select *
+        from pub_check
+        where check_apply_user_id = #{userId}
+          and check_change_id = #{changeId};
+    </select>
+
+    <select id="findUserReceivePubChecks" resultMap="pubCheckResultMap">
+        select *
+        from pub_check
+        where check_receive_user_id = #{userId};
     </select>
 </mapper>

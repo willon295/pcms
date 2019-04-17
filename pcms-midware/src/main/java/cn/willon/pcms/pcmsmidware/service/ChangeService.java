@@ -1,18 +1,13 @@
 package cn.willon.pcms.pcmsmidware.service;
 
-import cn.willon.pcms.pcmsmidware.domain.bean.Changes;
-import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
-import cn.willon.pcms.pcmsmidware.domain.bean.Project;
-import cn.willon.pcms.pcmsmidware.domain.bean.User;
+import cn.willon.pcms.pcmsmidware.domain.bean.*;
 import cn.willon.pcms.pcmsmidware.domain.bo.ChangeKvmsDO;
+import cn.willon.pcms.pcmsmidware.domain.bo.ProjectDO;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
 import cn.willon.pcms.pcmsmidware.mapper.ChangeMapper;
 import cn.willon.pcms.pcmsmidware.mapper.KvmMapper;
-import cn.willon.pcms.pcmsmidware.mapper.condition.QueryChangeProjectPermCondition;
-import cn.willon.pcms.pcmsmidware.mapper.condition.SaveUserChangeCondition;
-import cn.willon.pcms.pcmsmidware.mapper.condition.SaveUserKvmCondition;
-import cn.willon.pcms.pcmsmidware.mapper.condition.UpdatePubStatusCondition;
+import cn.willon.pcms.pcmsmidware.mapper.condition.*;
 import com.google.common.collect.Sets;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +18,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ChangeService
@@ -169,5 +165,54 @@ public class ChangeService {
 
     public String getPublishProjectIp(Integer changeId, Integer projectId) {
         return changeMapper.findPublishProjectIP(changeId, projectId);
+    }
+
+    public Integer findHoldPublishChangeId(String projectName) {
+        return changeMapper.findHoldPublishChangeId(projectName);
+    }
+
+    public void holdPublish(String projectName, Integer changeId) {
+
+        HoldPublishCondition condition = new HoldPublishCondition(projectName, changeId);
+        changeMapper.holdPublish(condition);
+    }
+
+    public void savePubCheck(PubCheck pubCheck) {
+        changeMapper.savePubCheck(pubCheck);
+    }
+
+    public void denyPubcheck(Integer checkId) {
+        changeMapper.denyPubCheck(checkId);
+    }
+
+    public void accessPubCheck(Integer checkId, String projectName, Integer changeId) {
+        // 改变状态
+        changeMapper.accessPubCheck(checkId);
+        // 修改线上 占用的工程ID
+        HoldPublishCondition condition = new HoldPublishCondition(projectName, changeId);
+        changeMapper.holdPublish(condition);
+    }
+
+    public List<ProjectDO> findAllPublishProjects(List<String> projectNames) {
+        List<ProjectDO> projects = projectNames.stream().map(n -> changeMapper.findPublishProjectByName(n)).collect(Collectors.toList());
+        return projects;
+    }
+
+    public List<PubCheck> findMySendPubChecks(Integer changeId, Integer userId) {
+
+        QueryUserSendPubCheckCondition condition = new QueryUserSendPubCheckCondition(changeId, userId);
+        return changeMapper.findUserSendPubCheck(condition);
+    }
+
+    public List<PubCheck> findMyReceivePubChecks(Integer userId) {
+        return changeMapper.findUserReceivePubChecks(userId);
+    }
+
+    public String findChangeNameByChangeId(Integer changeId) {
+        Changes byChangeId = changeMapper.findByChangeId(changeId);
+        if (byChangeId != null) {
+            return byChangeId.getChangeName();
+        }
+        return "";
     }
 }

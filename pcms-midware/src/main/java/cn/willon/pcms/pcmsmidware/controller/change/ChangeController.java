@@ -1,15 +1,12 @@
 package cn.willon.pcms.pcmsmidware.controller.change;
 
-import cn.willon.pcms.pcmsmidware.domain.bean.Changes;
-import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
-import cn.willon.pcms.pcmsmidware.domain.bean.Project;
+import cn.willon.pcms.pcmsmidware.domain.AccessCheckCondition;
+import cn.willon.pcms.pcmsmidware.domain.bean.*;
 import cn.willon.pcms.pcmsmidware.domain.bo.ChangeKvmsDO;
+import cn.willon.pcms.pcmsmidware.domain.bo.ProjectDO;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
-import cn.willon.pcms.pcmsmidware.domain.vo.ChangeDetailVO;
-import cn.willon.pcms.pcmsmidware.domain.vo.ChangeVO;
-import cn.willon.pcms.pcmsmidware.domain.vo.DevVO;
-import cn.willon.pcms.pcmsmidware.domain.vo.KvmVO;
+import cn.willon.pcms.pcmsmidware.domain.vo.*;
 import cn.willon.pcms.pcmsmidware.service.ChangeService;
 import cn.willon.pcms.pcmsmidware.service.GitlabService;
 import cn.willon.pcms.pcmsmidware.service.KvmService;
@@ -21,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -191,8 +189,72 @@ public class ChangeController {
      * @return 详情
      */
     @GetMapping("/change/publish/{changeId}")
-    public Result viewPublishChange(@PathVariable Integer changeId) {
-        return Result.successResult("");
+    public Result viewPublishChange(@PathVariable Integer changeId, @RequestParam(name = "userId") Integer userId) {
+        // 查询本工程相关的 projectName
+        ChangeKvmsDO changeKvmsDO = changeService.changeDetail(changeId);
+        String changeName = changeKvmsDO.getChange().getChangeName();
+        // 通过 projectName 获取相关的  线上工程信息
+        List<Kvm> kvms = changeKvmsDO.getKvms();
+        List<String> changeAllProjectNames = kvms.stream().map(Kvm::getProjectName).distinct().collect(Collectors.toList());
+        // 线上服务器信息
+        List<ProjectDO> changeAllProjects = changeService.findAllPublishProjects(changeAllProjectNames);
+        // 获取拥有权限的工程
+        List<Kvm> hasPermissionKvms = kvmService.findHasPermissionKvms(changeId, userId);
+        Map<String, Kvm> hasPermissionMap = hasPermissionKvms.stream().collect(Collectors.toMap(Kvm::getProjectName, k -> k));
+
+        List<ServerVO> servers = changeAllProjects.stream().map(p -> {
+            String projectName = p.getProjectName();
+            ServerVO serverVO = new ServerVO();
+            serverVO.setProjectId(p.getProjectId());
+            serverVO.setProjectName(projectName);
+            serverVO.setServerIp(p.getServerIp());
+            serverVO.setPubStatus(p.getPubStatus());
+            if (hasPermissionMap.containsKey(projectName)) {
+                serverVO.setPermission("all");
+            } else {
+                serverVO.setPermission(null);
+            }
+            return serverVO;
+
+        }).collect(Collectors.toList());
+        PublishVO publishVO = new PublishVO();
+        publishVO.setChangeId(changeId);
+        publishVO.setChangeName(changeName);
+        publishVO.setServers(servers);
+        // 获取需要本人审核的信息
+        List<PubCheck> receives = changeService.findMyReceivePubChecks(userId);
+        List<PubCheckVO> receiveVOs = receives.stream().map(r -> {
+            PubCheckVO re = new PubCheckVO();
+            re.setCheckId(r.getCheckId());
+            re.setCheckApplyUserId(r.getCheckApplyUserId());
+            String username = userService.findUsernameByUserId(r.getCheckApplyUserId());
+            re.setCheckApplyUsername(username);
+            Integer checkChangeId = r.getCheckChangeId();
+            String checkChangeName = changeService.findChangeNameByChangeId(checkChangeId);
+            re.setCheckChangeId(checkChangeId);
+            re.setCheckChangeName(checkChangeName);
+            re.setCheckStatus(r.getCheckStatus());
+            return re;
+
+        }).collect(Collectors.toList());
+        publishVO.setReceives(receiveVOs);
+
+
+        // 获取我发起的申请
+        List<PubCheck> sends = changeService.findMySendPubChecks(changeId, userId);
+        List<PubCheckVO> sendVOs = sends.stream().map(s -> {
+            PubCheckVO re = new PubCheckVO();
+            re.setCheckId(s.getCheckId());
+            re.setCheckReceiveUserId(s.getCheckReceiveUserId());
+            re.setCheckReceiveUsername(userService.findUsernameByUserId(s.getCheckReceiveUserId()));
+            re.setCheckChangeId(s.getCheckChangeId());
+            re.setCheckChangeName(changeService.findChangeNameByChangeId(s.getCheckChangeId()));
+            re.setCheckStatus(s.getCheckStatus());
+            return re;
+        }).collect(Collectors.toList());
+        publishVO.setSends(sendVOs);
+
+        return Result.successResult(publishVO);
     }
 
 
@@ -204,6 +266,26 @@ public class ChangeController {
         Kvm kvm = kvmService.findByHostname(hostname);
         kvmService.updateDevStatus(kvm.getKvmId(), DevStatusEnums.TEST_PASS.getStatus());
         return Result.successResult("ok");
+    }
+
+
+    /**
+     * 拒绝线上工程审核
+     */
+    @DeleteMapping("/check/{checkId}")
+    public void denyPubCheck(@PathVariable Integer checkId) {
+        changeService.denyPubcheck(checkId);
+    }
+
+    /**
+     * 同意线上工程审核
+     */
+    @PutMapping("/check/")
+    public void accessPubCheck(@RequestBody AccessCheckCondition condition) {
+        Integer checkId = condition.getCheckId();
+        Integer changeId = condition.getChangeId();
+        String projectName = condition.getProjectName();
+        changeService.accessPubCheck(checkId, projectName, changeId);
     }
 
 

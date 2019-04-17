@@ -33,13 +33,11 @@ public class PackDeployController {
      */
     @PostMapping("/deploy")
     public Result deploy(@RequestBody DeployCondition deployCondition) {
-        String hostname = deployCondition.getHostname();
-        String branchName = deployCondition.getBranchName();
-        String env = deployCondition.getEnv();
-        boolean pack = packService.pack(hostname, branchName, env);
+
+        boolean pack = packService.pack(deployCondition);
         boolean deploySuccess = false;
         if (pack) {
-            deploySuccess = deployService.deploy(hostname, branchName);
+            deploySuccess = deployService.deploy(deployCondition);
         }
         if (deploySuccess) {
             return Result.successResult("success");

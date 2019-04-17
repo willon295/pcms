@@ -28,4 +28,16 @@ public class DeployCondition implements Serializable {
      * 分支
      */
     private String branchName;
+
+
+    /**
+     * 打包的用户
+     */
+    private Integer userId;
+
+
+    /**
+     * 变更
+     */
+    private Integer changeId;
 }

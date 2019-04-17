@@ -1,6 +1,9 @@
 package cn.willon.pcms.pcmsmidware.service;
 
+import cn.willon.pcms.pcmsmidware.domain.DeployCondition;
 import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
+import cn.willon.pcms.pcmsmidware.domain.bean.PubCheck;
+import cn.willon.pcms.pcmsmidware.domain.bean.User;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.constrains.PubStatusEnums;
 import cn.willon.pcms.pcmsmidware.executor.PackBashExecutor;
@@ -38,7 +41,10 @@ public class PackService {
     @Resource
     ChangeService changeService;
 
-    public boolean pack(String hostname, String branchName, String env) {
+    public boolean pack(DeployCondition condition) {
+        String hostname = condition.getHostname();
+        String branchName = condition.getBranchName();
+        String env = condition.getEnv();
         if (DEV.equals(env)) {
             try {
                 packDev(hostname, branchName);
@@ -51,7 +57,7 @@ public class PackService {
 
         } else if (PUBLISH.equals(env)) {
             try {
-                packPub(hostname, branchName);
+                packPub(condition);
                 return true;
             } catch (IOException e) {
                 Kvm kvm = kvmService.findByHostname(hostname);
@@ -75,7 +81,9 @@ public class PackService {
     }
 
 
-    private void packPub(String hostname, String branchName) throws IOException {
+    private void packPub(DeployCondition condition) throws IOException {
+        String hostname = condition.getHostname();
+        String branchName = condition.getBranchName();
         Kvm kvm = kvmService.findByHostname(hostname);
         Integer changeId = kvm.getChangeId();
         Integer projectId = kvm.getProjectId();
@@ -86,7 +94,21 @@ public class PackService {
         if (changeService.hasProjectPublishPermission(projectId, changeId)) {
             packBashExecutor.pack(branchName, sshUrl, projectName, PUBLISH);
         } else {
-            log.error("没有操作权限");
+            Integer applyUserId = condition.getUserId();
+            // 检查是否有人占用
+            Integer holdPublishChangeId = changeService.findHoldPublishChangeId(projectName);
+            if (holdPublishChangeId == null) {
+                // 立马占用线上环境
+                changeService.holdPublish(projectName, changeId);
+            } else {
+                PubCheck pubCheck = new PubCheck();
+                pubCheck.setCheckApplyUserId(applyUserId);
+                User owner = changeService.findOwner(holdPublishChangeId);
+                pubCheck.setCheckReceiveUserId(owner.getUserId());
+                pubCheck.setCheckChangeId(changeId);
+                changeService.savePubCheck(pubCheck);
+            }
+
         }
     }
 

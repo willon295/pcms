@@ -1,10 +1,10 @@
 package cn.willon.pcms.pcmsmidware.mapper;
 
 import cn.willon.pcms.pcmsmidware.domain.bean.Changes;
+import cn.willon.pcms.pcmsmidware.domain.bean.PubCheck;
 import cn.willon.pcms.pcmsmidware.domain.bean.User;
-import cn.willon.pcms.pcmsmidware.mapper.condition.QueryChangeProjectPermCondition;
-import cn.willon.pcms.pcmsmidware.mapper.condition.SaveUserChangeCondition;
-import cn.willon.pcms.pcmsmidware.mapper.condition.UpdatePubStatusCondition;
+import cn.willon.pcms.pcmsmidware.domain.bo.ProjectDO;
+import cn.willon.pcms.pcmsmidware.mapper.condition.*;
 
 import java.util.List;
 
@@ -46,6 +46,11 @@ public interface ChangeMapper {
      */
     void saveUserChange(SaveUserChangeCondition condition);
 
+    /**
+     * 删除变更
+     *
+     * @param changeId 变更ID
+     */
     void deleteChangeByChangeId(Integer changeId);
 
     Integer findOwnerId(Integer changeId);
@@ -58,7 +63,59 @@ public interface ChangeMapper {
     int hasProjectPublishPermission(QueryChangeProjectPermCondition condition);
 
 
+    /**
+     * 更新线上服务器状态
+     *
+     * @param condition 条件
+     */
     void updateProjectStatus(UpdatePubStatusCondition condition);
 
+    /**
+     * 获取线上服务器IP
+     *
+     * @param changeId  变更Id
+     * @param projectId 工程ID
+     * @return ip
+     */
     String findPublishProjectIP(Integer changeId, Integer projectId);
+
+    /**
+     * 获取占用线上环境的变更
+     *
+     * @param projectName 工程名
+     * @return 变更Id
+     */
+    Integer findHoldPublishChangeId(String projectName);
+
+    /**
+     * 占有工程的线上操作权限
+     *
+     * @param condition 条件
+     */
+    void holdPublish(HoldPublishCondition condition);
+
+    /**
+     * 保存线上审核
+     *
+     * @param pubCheck 审核
+     */
+    void savePubCheck(PubCheck pubCheck);
+
+    /**
+     * 拒绝线上环境审核
+     * @param checkId id
+     */
+    void denyPubCheck(Integer checkId);
+
+    /**
+     * 拒绝线上环境审核
+     * @param checkId id
+     */
+    void accessPubCheck(Integer checkId);
+
+    ProjectDO findPublishProjectByName(String projectName);
+
+    List<PubCheck> findUserSendPubCheck(QueryUserSendPubCheckCondition condition);
+
+    List<PubCheck> findUserReceivePubChecks(Integer userId);
 }

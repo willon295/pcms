@@ -48,4 +48,9 @@ public class UserService {
         User loginUser = userMapper.findByUsernamePassword(user);
         return loginUser;
     }
+
+    public String findUsernameByUserId(Integer userId) {
+        String realName = userMapper.findByUserId(userId).getRealName();
+        return realName;
+    }
 }
