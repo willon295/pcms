@@ -79,19 +79,21 @@ public class KvmService {
                 int tryLockCount = 0;
                 boolean lock = false;
                 while (!lock) {
-                    if (tryLockCount++ > 0) {
+                    if (tryLockCount > 0) {
                         Thread.sleep(SLEEP_TIME);
                     }
                     lock = installConfService.tryLock();
+                    tryLockCount++;
                 }
                 // 开始生成文件， 并且创建kvm
                 int tryGenfileCount = 0;
                 boolean genFile = false;
                 while (!genFile) {
-                    if (tryGenfileCount++ > 0) {
+                    if (tryGenfileCount > 0) {
                         Thread.sleep(SLEEP_TIME);
                     }
                     genFile = installConfService.generate(hostname);
+                    tryGenfileCount++;
                 }
                 kvmBashExecutor.installKvm(hostname);
                 return null;

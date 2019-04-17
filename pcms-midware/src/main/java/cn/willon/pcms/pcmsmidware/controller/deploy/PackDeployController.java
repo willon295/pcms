@@ -1,10 +1,9 @@
 package cn.willon.pcms.pcmsmidware.controller.deploy;
 
+import cn.willon.pcms.pcmsmidware.domain.DeployCondition;
 import cn.willon.pcms.pcmsmidware.service.DeployService;
 import cn.willon.pcms.pcmsmidware.service.PackService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -25,15 +24,14 @@ public class PackDeployController {
     @Resource
     DeployService deployService;
 
-
     /**
      * 部署
-     *
-     * @param hostname   主机名
-     * @param branchName 分支名
      */
-    @GetMapping("/deploy/{env}/{hostname}/{branchName}/")
-    public void deploy(@PathVariable String env, @PathVariable String hostname, @PathVariable String branchName) {
+    @PostMapping("/deploy")
+    public void deploy(@RequestBody DeployCondition deployCondition) {
+        String hostname = deployCondition.getHostname();
+        String branchName = deployCondition.getBranchName();
+        String env = deployCondition.getEnv();
         boolean pack = packService.pack(hostname, branchName, env);
         if (pack) {
             deployService.deploy(hostname, branchName);

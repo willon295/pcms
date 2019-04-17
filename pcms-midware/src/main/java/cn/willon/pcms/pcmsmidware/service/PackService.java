@@ -2,7 +2,6 @@ package cn.willon.pcms.pcmsmidware.service;
 
 import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
-import cn.willon.pcms.pcmsmidware.domain.constrains.EnvType;
 import cn.willon.pcms.pcmsmidware.domain.constrains.PubStatusEnums;
 import cn.willon.pcms.pcmsmidware.executor.PackBashExecutor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +10,6 @@ import org.gitlab.api.models.GitlabProject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 
 /**
