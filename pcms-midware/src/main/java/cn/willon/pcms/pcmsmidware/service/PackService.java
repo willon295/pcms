@@ -106,6 +106,7 @@ public class PackService {
                 User owner = changeService.findOwner(holdPublishChangeId);
                 pubCheck.setCheckReceiveUserId(owner.getUserId());
                 pubCheck.setCheckChangeId(changeId);
+                pubCheck.setCheckProjectName(projectName);
                 changeService.savePubCheck(pubCheck);
             }
 

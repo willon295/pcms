@@ -50,6 +50,7 @@
         <result column="check_apply_user_id" property="checkApplyUserId"/>
         <result column="check_receive_user_id" property="checkReceiveUserId"/>
         <result column="check_change_id" property="checkChangeId"/>
+        <result column="check_project_name" property="checkProjectName"/>
         <result column="check_status" property="checkStatus"/>
     </resultMap>
 
@@ -133,8 +134,8 @@
 
     <!--审核相关-->
     <insert id="savePubCheck" parameterType="cn.willon.pcms.pcmsmidware.domain.bean.PubCheck">
-        insert into pub_check (check_apply_user_id, check_receive_user_id, check_change_id)
-        values (#{checkApplyUserId}, #{checkReceiveUserId}, #{checkChangeId});
+        insert into pub_check (check_apply_user_id, check_receive_user_id, check_change_id,check_project_name)
+        values (#{checkApplyUserId}, #{checkReceiveUserId}, #{checkChangeId},#{checkProjectName});
     </insert>
     <update id="denyPubCheck">
         update pub_check

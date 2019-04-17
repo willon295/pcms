@@ -18,6 +18,7 @@ public class PubCheck implements Serializable {
     private Integer checkReceiveUserId;
     private Integer checkChangeId;
 
+    private String checkProjectName;
     /**
      * 审核状态：{-1： 待审核，0：审核不通过，1：审核通过 }
      **/
