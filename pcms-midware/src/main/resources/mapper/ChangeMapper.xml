@@ -134,8 +134,8 @@
 
     <!--审核相关-->
     <insert id="savePubCheck" parameterType="cn.willon.pcms.pcmsmidware.domain.bean.PubCheck">
-        insert into pub_check (check_apply_user_id, check_receive_user_id, check_change_id,check_project_name)
-        values (#{checkApplyUserId}, #{checkReceiveUserId}, #{checkChangeId},#{checkProjectName});
+        insert into pub_check (check_apply_user_id, check_receive_user_id, check_change_id, check_project_name)
+        values (#{checkApplyUserId}, #{checkReceiveUserId}, #{checkChangeId}, #{checkProjectName});
     </insert>
     <update id="denyPubCheck">
         update pub_check
@@ -166,4 +166,22 @@
         from pub_check
         where check_receive_user_id = #{userId};
     </select>
+
+
+    <select id="findChangUsers" resultType="java.lang.Integer">
+
+        select user_id
+        from user_changes
+        where change_id = #{changeId};
+    </select>
+
+
+    <update id="updateChange" parameterType="cn.willon.pcms.pcmsmidware.domain.bean.Changes">
+        update changes
+        set
+        <if test="expireDate != null">
+            expire_date = #{expireDate}
+        </if>
+        where change_id = #{changeId};
+    </update>
 </mapper>

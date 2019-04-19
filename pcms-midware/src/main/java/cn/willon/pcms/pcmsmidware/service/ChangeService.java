@@ -3,13 +3,17 @@ package cn.willon.pcms.pcmsmidware.service;
 import cn.willon.pcms.pcmsmidware.domain.bean.*;
 import cn.willon.pcms.pcmsmidware.domain.bo.ChangeKvmsDO;
 import cn.willon.pcms.pcmsmidware.domain.bo.ProjectDO;
+import cn.willon.pcms.pcmsmidware.domain.condition.UpdateChangeDto;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
 import cn.willon.pcms.pcmsmidware.mapper.ChangeMapper;
 import cn.willon.pcms.pcmsmidware.mapper.KvmMapper;
 import cn.willon.pcms.pcmsmidware.mapper.condition.*;
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.Instant;
@@ -18,6 +22,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +31,7 @@ import java.util.stream.Collectors;
  * @author Willon
  * @since 2019-04-06
  */
+@Slf4j
 @Service
 public class ChangeService {
 
@@ -215,4 +221,60 @@ public class ChangeService {
         }
         return "";
     }
+
+    /**
+     * 更新 变更信息
+     *
+     * @param dto
+     */
+    public void updateChange(UpdateChangeDto dto) {
+
+        int changeId = dto.getChangeId();
+        int ownerId = dto.getOwnerId();
+        Long endTime = null;
+        Changes changes = new Changes();
+        changes.setChangeId(changeId);
+
+        String endDate = dto.getExpireDate();
+        if (!StringUtils.isEmpty(endDate)) {
+            endDate += " 00:00:00";
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.parse(endDate, formatter);
+            Instant instant = dateTime.toInstant(ZoneOffset.UTC);
+            endTime = instant.toEpochMilli();
+        }
+        changes.setExpireDate(endTime);
+        changeMapper.updateChange(changes);
+        // 获取新加入变更的人员信息
+        List<UpdateChangeDto.ProjectsBean> projects = dto.getProjects();
+        List<Integer> exitsUser = changeMapper.findChangUsers(changeId);
+        log.info(String.format("{exitsUsers: %s}", JSON.toJSONString(exitsUser)));
+        Set<Integer> newUserIds = projects.stream().flatMap(p -> p.getUsers().stream()).collect(Collectors.toSet());
+        newUserIds.removeAll(exitsUser);
+        log.info(String.format("{addUsers: %s}", JSON.toJSONString(newUserIds)));
+        newUserIds.forEach(id -> {
+            SaveUserChangeCondition condition = new SaveUserChangeCondition();
+            condition.setUserId(id);
+            condition.setChangeId(changeId);
+            condition.setIsOwner(ownerId == id ? 1 : 0);
+            changeMapper.saveUserChange(condition);
+        });
+
+
+        projects.forEach(p -> {
+            List<Integer> users = p.getUsers();
+            for (Integer user : users) {
+                if (newUserIds.contains(user)) {
+                    Integer kid = kvmMapper.finKvmIdByProjectId(p.getProjectId());
+                    SaveUserKvmCondition saveUserKvmCondition = new SaveUserKvmCondition();
+                    saveUserKvmCondition.setUserId(user);
+                    saveUserKvmCondition.setKvmId(kid);
+                    saveUserKvmCondition.setPermission("all");
+                    kvmMapper.saveUserKvm(saveUserKvmCondition);
+                }
+            }
+        });
+    }
+
+
 }

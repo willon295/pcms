@@ -118,4 +118,8 @@ public interface ChangeMapper {
     List<PubCheck> findUserSendPubCheck(QueryUserSendPubCheckCondition condition);
 
     List<PubCheck> findUserReceivePubChecks(Integer userId);
+
+    List<Integer> findChangUsers(int changeId);
+
+    void updateChange(Changes changes);
 }

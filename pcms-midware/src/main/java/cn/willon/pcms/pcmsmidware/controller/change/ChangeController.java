@@ -7,6 +7,7 @@ import cn.willon.pcms.pcmsmidware.domain.bean.Project;
 import cn.willon.pcms.pcmsmidware.domain.bean.PubCheck;
 import cn.willon.pcms.pcmsmidware.domain.bo.ChangeKvmsDO;
 import cn.willon.pcms.pcmsmidware.domain.bo.ProjectDO;
+import cn.willon.pcms.pcmsmidware.domain.condition.UpdateChangeDto;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
 import cn.willon.pcms.pcmsmidware.domain.vo.*;
@@ -15,6 +16,7 @@ import cn.willon.pcms.pcmsmidware.service.GitlabService;
 import cn.willon.pcms.pcmsmidware.service.KvmService;
 import cn.willon.pcms.pcmsmidware.service.UserService;
 import cn.willon.pcms.pcmsmidware.util.Result;
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -292,7 +294,6 @@ public class ChangeController {
 
 
     /**
-     * // TODO 修改变更
      * 1. 修改变更的owner
      * 2. 修改工程的参与者
      * 3. 添加依赖工程
@@ -300,9 +301,10 @@ public class ChangeController {
      * @return 处理结果
      */
     @PutMapping("/change")
-    public Result updateChange() {
-
-
-        return null;
+    public Result updateChange(@RequestBody UpdateChangeDto dto) {
+        // 变更相关的修改
+        changeService.updateChange(dto);
+        log.info(String.format("{updateInfo: %s}", JSON.toJSONString(dto)));
+        return Result.successResult("success");
     }
 }

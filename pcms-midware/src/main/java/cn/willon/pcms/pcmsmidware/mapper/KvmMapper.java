@@ -73,4 +73,6 @@ public interface KvmMapper {
     void updateDevStatus(UpdateKvmDevStatusCondition condition);
 
     List<Kvm> findHasPermissionKvm(QueryHasPermissionKvmCondition condition);
+
+    Integer finKvmIdByProjectId(int projectId);
 }
