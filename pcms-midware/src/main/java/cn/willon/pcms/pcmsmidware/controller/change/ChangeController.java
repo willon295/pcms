@@ -310,7 +310,7 @@ public class ChangeController {
     }
 
     @PutMapping("/change/kvm")
-    public void updateKvm(List<UpdateKvmDto> dtos) {
+    public void updateKvm(ArrayList<UpdateKvmDto> dtos) {
         kvmService.updateKvm(dtos);
     }
 }

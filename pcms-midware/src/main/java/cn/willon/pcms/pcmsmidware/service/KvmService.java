@@ -183,7 +183,7 @@ public class KvmService {
         return hasPermissionKvm;
     }
 
-    public void updateKvm(List<UpdateKvmDto> dtos) {
+    public void updateKvm(ArrayList<UpdateKvmDto> dtos) {
         HashSet<String> hostnames = Sets.newHashSet();
         for (UpdateKvmDto dto : dtos) {
             String projectName = dto.getProjectName();
