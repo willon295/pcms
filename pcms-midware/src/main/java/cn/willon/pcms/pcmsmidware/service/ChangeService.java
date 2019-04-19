@@ -234,7 +234,6 @@ public class ChangeService {
         Long endTime = null;
         Changes changes = new Changes();
         changes.setChangeId(changeId);
-
         String endDate = dto.getExpireDate();
         if (!StringUtils.isEmpty(endDate)) {
             endDate += " 00:00:00";

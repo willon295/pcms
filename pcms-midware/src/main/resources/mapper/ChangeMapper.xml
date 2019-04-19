@@ -178,10 +178,12 @@
 
     <update id="updateChange" parameterType="cn.willon.pcms.pcmsmidware.domain.bean.Changes">
         update changes
-        set
-        <if test="expireDate != null">
-            expire_date = #{expireDate}
-        </if>
+
+        <trim prefix="set" suffixOverrides=",">
+            <if test="expireDate != null">
+                expire_date = #{expireDate},
+            </if>
+        </trim>
         where change_id = #{changeId};
     </update>
 </mapper>
