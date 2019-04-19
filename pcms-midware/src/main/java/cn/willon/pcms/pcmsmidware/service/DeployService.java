@@ -64,7 +64,7 @@ public class DeployService {
         }
 
         // 检查是否有部署成功
-        boolean run = ServerUtil.isReachable(ip, TOMCAT_PORT, 100);
+        boolean run = ServerUtil.isReachable(ip, TOMCAT_PORT, 5000);
 
         if (run) {
             if (MASTER.equals(branchName)) {
