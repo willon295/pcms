@@ -2,20 +2,32 @@ package cn.willon.pcms.pcmsmidware.service;
 
 import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
+import cn.willon.pcms.pcmsmidware.domain.dto.UpdateKvmDto;
 import cn.willon.pcms.pcmsmidware.executor.KvmBashExecutor;
 import cn.willon.pcms.pcmsmidware.mapper.KvmMapper;
 import cn.willon.pcms.pcmsmidware.mapper.condition.QueryHasPermissionKvmCondition;
+import cn.willon.pcms.pcmsmidware.mapper.condition.SaveUserKvmCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.UpdateKvmDevStatusCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.UpdateKvmIpCondition;
+import cn.willon.pcms.pcmsmidware.mapper.domain.KvmUser;
 import cn.willon.pcms.pcmsmidware.thred.ThreadPoolManager;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * KvmService
@@ -28,6 +40,7 @@ import java.util.List;
 public class KvmService {
 
     public static final long SLEEP_TIME = 10000L;
+    public static final String ALL = "all";
     @Resource
     private KvmMapper kvmMapper;
 
@@ -168,5 +181,63 @@ public class KvmService {
         condition.setChangeId(changeId);
         List<Kvm> hasPermissionKvm = kvmMapper.findHasPermissionKvm(condition);
         return hasPermissionKvm;
+    }
+
+    public void updateKvm(List<UpdateKvmDto> dtos) {
+        HashSet<String> hostnames = Sets.newHashSet();
+        for (UpdateKvmDto dto : dtos) {
+            String projectName = dto.getProjectName();
+            String branchName = dto.getBranchName();
+            String hostname = projectName + "-" + branchName;
+            Set<Integer> newUsers = dto.getUsers();
+            Kvm kvm = kvmMapper.findByHostname(hostname);
+            // 已经创建该kvm ，添加用户
+            if (kvm != null && kvm.getKvmId() != null) {
+                Integer kvmId = kvm.getKvmId();
+                Kvm kvmWithUser = kvmMapper.findKvmWithUser(kvmId);
+                List<Integer> originUsers = kvmWithUser.getUsers().stream().map(KvmUser::getUserId).collect(Collectors.toList());
+                newUsers.removeAll(originUsers);
+                newUsers.forEach(uid -> {
+                    SaveUserKvmCondition saveUserKvmCondition = new SaveUserKvmCondition();
+                    saveUserKvmCondition.setUserId(uid);
+                    saveUserKvmCondition.setKvmId(kvmId);
+                    saveUserKvmCondition.setPermission(ALL);
+                });
+            }
+            // 不存在，  新建kvm
+            else {
+                Kvm newKVM = new Kvm();
+                newKVM.setHostname(hostname);
+                newKVM.setProjectId(dto.getProjectId());
+                newKVM.setProjectName(projectName);
+                newKVM.setIp("");
+                newKVM.setDevStatus(-1);
+                newKVM.setCreateDate(System.currentTimeMillis());
+                String endDate = dto.getExpireDate();
+                endDate += " 00:00:00";
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime dateTime = LocalDateTime.parse(endDate, formatter);
+                Instant instant = dateTime.toInstant(ZoneOffset.UTC);
+                long endTime = instant.toEpochMilli();
+                newKVM.setExpireDate(endTime);
+                newKVM.setChangeId(dto.getChangeId());
+                kvmMapper.save(kvm);
+                newUsers.forEach(u -> {
+                    SaveUserKvmCondition saveUserKvmCondition = new SaveUserKvmCondition();
+                    saveUserKvmCondition.setUserId(u);
+                    saveUserKvmCondition.setKvmId(newKVM.getKvmId());
+                    saveUserKvmCondition.setPermission(ALL);
+                    kvmMapper.saveUserKvm(saveUserKvmCondition);
+                });
+
+                hostnames.add(hostname);
+            }
+            // 如果新建的主机不为空
+            if (!CollectionUtils.isEmpty(hostnames)) {
+                List<String> hosts = hostnames.stream().distinct().collect(Collectors.toList());
+                createKvmAsync(hosts);
+            }
+        }
+
     }
 }

@@ -168,7 +168,7 @@
           and uk.user_id = #{userId};
     </select>
 
-    <select id="finKvmIdByProjectId" resultType="java.lang.Integer">
+    <select id="findKvmIdByProjectId" resultType="java.lang.Integer">
 
         select kvm_id
         from kvm

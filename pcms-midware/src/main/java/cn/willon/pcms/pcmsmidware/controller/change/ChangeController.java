@@ -7,9 +7,10 @@ import cn.willon.pcms.pcmsmidware.domain.bean.Project;
 import cn.willon.pcms.pcmsmidware.domain.bean.PubCheck;
 import cn.willon.pcms.pcmsmidware.domain.bo.ChangeKvmsDO;
 import cn.willon.pcms.pcmsmidware.domain.bo.ProjectDO;
-import cn.willon.pcms.pcmsmidware.domain.condition.UpdateChangeDto;
+import cn.willon.pcms.pcmsmidware.domain.dto.UpdateChangeDto;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
+import cn.willon.pcms.pcmsmidware.domain.dto.UpdateKvmDto;
 import cn.willon.pcms.pcmsmidware.domain.vo.*;
 import cn.willon.pcms.pcmsmidware.service.ChangeService;
 import cn.willon.pcms.pcmsmidware.service.GitlabService;
@@ -306,5 +307,10 @@ public class ChangeController {
         changeService.updateChange(dto);
         log.info(String.format("{updateInfo: %s}", JSON.toJSONString(dto)));
         return Result.successResult("success");
+    }
+
+    @PutMapping("/change/kvm")
+    public void updateKvm(List<UpdateKvmDto> dtos) {
+        kvmService.updateKvm(dtos);
     }
 }
