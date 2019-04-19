@@ -20,7 +20,7 @@ import javax.annotation.Resource;
 public class DeployService {
 
 
-    private static final String TOMCAT_PORT = "8080";
+    private static final Integer TOMCAT_PORT = 8080;
     private static final String MASTER = "master";
     private static final int TIMEOUT = 10;
     @Resource
