@@ -231,7 +231,7 @@ public class ChangeService {
 
         int changeId = dto.getChangeId();
         int ownerId = dto.getOwnerId();
-        Long endTime = null;
+        Long endTime;
         Changes changes = new Changes();
         changes.setChangeId(changeId);
         String endDate = dto.getExpireDate();
@@ -241,9 +241,10 @@ public class ChangeService {
             LocalDateTime dateTime = LocalDateTime.parse(endDate, formatter);
             Instant instant = dateTime.toInstant(ZoneOffset.UTC);
             endTime = instant.toEpochMilli();
+            changes.setExpireDate(endTime);
+            changeMapper.updateChange(changes);
         }
-        changes.setExpireDate(endTime);
-        changeMapper.updateChange(changes);
+
         // 获取新加入变更的人员信息
         List<Integer> exitsUser = changeMapper.findChangUsers(changeId);
         log.info(String.format("{exitsUsers: %s}", JSON.toJSONString(exitsUser)));
