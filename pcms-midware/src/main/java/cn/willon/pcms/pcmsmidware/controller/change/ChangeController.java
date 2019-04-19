@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 public class ChangeController {
 
 
+    public static final String SUCCESS = "success";
     @Resource
     private ChangeService changeService;
 
@@ -305,12 +306,12 @@ public class ChangeController {
     public Result updateChange(@RequestBody UpdateChangeDto dto) {
         // 变更相关的修改
         changeService.updateChange(dto);
-        log.info(String.format("{updateInfo: %s}", JSON.toJSONString(dto)));
-        return Result.successResult("success");
+        return Result.successResult(Result.SUCCESS);
     }
 
     @PutMapping("/change/kvm")
-    public void updateKvm(ArrayList<UpdateKvmDto> dtos) {
+    public Result updateKvm(@RequestBody ArrayList<UpdateKvmDto> dtos) {
         kvmService.updateKvm(dtos);
+        return Result.successResult(Result.SUCCESS);
     }
 }

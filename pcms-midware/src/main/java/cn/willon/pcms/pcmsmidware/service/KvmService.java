@@ -11,6 +11,7 @@ import cn.willon.pcms.pcmsmidware.mapper.condition.UpdateKvmDevStatusCondition;
 import cn.willon.pcms.pcmsmidware.mapper.condition.UpdateKvmIpCondition;
 import cn.willon.pcms.pcmsmidware.mapper.domain.KvmUser;
 import cn.willon.pcms.pcmsmidware.thred.ThreadPoolManager;
+import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -197,11 +198,13 @@ public class KvmService {
                 Kvm kvmWithUser = kvmMapper.findKvmWithUser(kvmId);
                 List<Integer> originUsers = kvmWithUser.getUsers().stream().map(KvmUser::getUserId).collect(Collectors.toList());
                 newUsers.removeAll(originUsers);
+                log.info("工程新增用户: {kvmId: %s ,users: %s}", kvmId, JSON.toJSONString(newUsers));
                 newUsers.forEach(uid -> {
                     SaveUserKvmCondition saveUserKvmCondition = new SaveUserKvmCondition();
                     saveUserKvmCondition.setUserId(uid);
                     saveUserKvmCondition.setKvmId(kvmId);
                     saveUserKvmCondition.setPermission(ALL);
+                    kvmMapper.saveUserKvm(saveUserKvmCondition);
                 });
             }
             // 不存在，  新建kvm
@@ -235,6 +238,8 @@ public class KvmService {
             // 如果新建的主机不为空
             if (!CollectionUtils.isEmpty(hostnames)) {
                 List<String> hosts = hostnames.stream().distinct().collect(Collectors.toList());
+                // 新增工程
+                log.info(String.format("新建工程： {hostnames: %s}", JSON.toJSONString(hosts)));
                 createKvmAsync(hosts);
             }
         }
