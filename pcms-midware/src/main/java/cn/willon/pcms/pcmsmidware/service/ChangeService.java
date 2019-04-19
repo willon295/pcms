@@ -10,6 +10,7 @@ import cn.willon.pcms.pcmsmidware.mapper.ChangeMapper;
 import cn.willon.pcms.pcmsmidware.mapper.KvmMapper;
 import cn.willon.pcms.pcmsmidware.mapper.condition.*;
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -261,19 +263,30 @@ public class ChangeService {
         });
 
 
+        // 数据去重
+        HashMap<Integer, Set<Integer>> puidsMap = Maps.newHashMap();
         projects.forEach(p -> {
             List<Integer> users = p.getUsers();
-            for (Integer user : users) {
-                if (newUserIds.contains(user)) {
-                    Integer kid = kvmMapper.finKvmIdByProjectId(p.getProjectId());
-                    SaveUserKvmCondition saveUserKvmCondition = new SaveUserKvmCondition();
-                    saveUserKvmCondition.setUserId(user);
-                    saveUserKvmCondition.setKvmId(kid);
-                    saveUserKvmCondition.setPermission("all");
-                    kvmMapper.saveUserKvm(saveUserKvmCondition);
-                }
+            int projectId = p.getProjectId();
+            if (puidsMap.containsKey(projectId)) {
+                puidsMap.get(projectId).addAll(users);
+            } else {
+                HashSet<Integer> uids = Sets.newHashSet(users);
+                puidsMap.put(projectId, uids);
             }
         });
+
+
+        puidsMap.forEach((pid,uids)-> uids.forEach(user->{
+            if (newUserIds.contains(user)) {
+                Integer kid = kvmMapper.finKvmIdByProjectId(pid);
+                SaveUserKvmCondition saveUserKvmCondition = new SaveUserKvmCondition();
+                saveUserKvmCondition.setUserId(user);
+                saveUserKvmCondition.setKvmId(kid);
+                saveUserKvmCondition.setPermission("all");
+                kvmMapper.saveUserKvm(saveUserKvmCondition);
+            }
+        }));
     }
 
 
