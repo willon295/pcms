@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -24,7 +25,7 @@ public class PackBashExecutor {
     /**
      * ./pack.sh  br7  git@10.0.0.11:member/interest.git   interest  dev
      */
-    public void pack(String branchName, String gitUrl, String projectName, String env) {
+    public void pack(String branchName, String gitUrl, String projectName, String env) throws IOException {
 
         String file = TMP_DIR + "/pkg/" + projectName + branchName + ".tar.gz";
         ArrayList<String> cmds = new ArrayList<>();
@@ -38,6 +39,7 @@ public class PackBashExecutor {
         cmds.add(sb);
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command(cmds);
+        processBuilder.start();
         log.info(String.format("打包文件： {command: %s ， 输出文件：%s }", JSON.toJSONString(cmds), file));
     }
 
