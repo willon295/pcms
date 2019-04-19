@@ -17,6 +17,8 @@ public class ServerUtil {
 
 
     public static boolean isReachable(String ip, String port, int timeout) {
+
+        log.info("测试连同性： {ip:%s, port:%s}", ip, port);
         boolean reachable;
         // 如果端口为空，使用 isReachable 检测，非空使用 socket 检测
         if (port == null) {
