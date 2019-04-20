@@ -57,8 +57,7 @@ public class PackService {
 
         } else if (PUBLISH.equals(env)) {
             try {
-                packPub(condition);
-                return true;
+                return packPub(condition);
             } catch (IOException e) {
                 Kvm kvm = kvmService.findByHostname(hostname);
                 Integer changeId = kvm.getChangeId();
@@ -71,17 +70,18 @@ public class PackService {
 
     }
 
-    private void packDev(String hostname, String branchName) throws IOException {
+    private boolean packDev(String hostname, String branchName) throws IOException {
         Kvm kvm = kvmService.findByHostname(hostname);
         Integer projectId = kvm.getProjectId();
         GitlabProject project = gitlabAPI.getProject(projectId);
         String projectName = project.getName();
         String sshUrl = project.getSshUrl();
         packBashExecutor.pack(branchName, sshUrl, projectName, DEV);
+        return true;
     }
 
 
-    private void packPub(DeployCondition condition) throws IOException {
+    private boolean packPub(DeployCondition condition) throws IOException {
 
         // 主机名 + master
         String hostname = condition.getHostname();
@@ -94,6 +94,7 @@ public class PackService {
         // 判断是否有权限
         if (changeService.hasProjectPublishPermission(projectId, changeId)) {
             packBashExecutor.pack(branchName, sshUrl, projectName, PUBLISH);
+            return true;
         } else {
             Integer applyUserId = condition.getUserId();
             // 检查是否有人占用
@@ -101,6 +102,8 @@ public class PackService {
             if (holdPublishChangeId == null) {
                 // 立马占用线上环境
                 changeService.holdPublish(projectName, changeId);
+                packBashExecutor.pack(branchName, sshUrl, projectName, PUBLISH);
+                return true;
             } else {
                 PubCheck pubCheck = new PubCheck();
                 pubCheck.setCheckApplyUserId(applyUserId);
@@ -109,6 +112,7 @@ public class PackService {
                 pubCheck.setCheckChangeId(changeId);
                 pubCheck.setCheckProjectName(projectName);
                 changeService.savePubCheck(pubCheck);
+                return false;
             }
 
         }
