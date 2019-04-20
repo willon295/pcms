@@ -38,7 +38,7 @@
 
     <resultMap id="projectDOResultMap" type="cn.willon.pcms.pcmsmidware.domain.bo.ProjectDO">
         <id column="id" property="id"/>
-        <result column="projectId" property="projectId"/>
+        <result column="project_id" property="projectId"/>
         <result column="project_name" property="projectName"/>
         <result column="cur_change_id" property="curChangeId"/>
         <result column="pub_status" property="pubStatus"/>
