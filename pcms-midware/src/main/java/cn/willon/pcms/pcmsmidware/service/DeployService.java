@@ -63,6 +63,11 @@ public class DeployService {
             kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOY_FAIL.getStatus());
             return false;
         }
+        try {
+            Thread.sleep(TIMEOUT);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         // 检查是否有部署成功
         boolean run = ServerUtil.isReachable(ip, TOMCAT_PORT, TIMEOUT);
         if (run) {
