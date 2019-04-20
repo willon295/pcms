@@ -4,9 +4,11 @@ import cn.willon.pcms.pcmsmidware.domain.bean.User;
 import cn.willon.pcms.pcmsmidware.domain.bo.UserChangeDO;
 import cn.willon.pcms.pcmsmidware.service.UserService;
 import cn.willon.pcms.pcmsmidware.util.Result;
+import com.sun.org.apache.xml.internal.utils.StringComparable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -71,7 +73,7 @@ public class UserController {
     @GetMapping("/users")
     public Result users() {
         List<User> users = userService.findAll();
-        List<User> collect = users.stream().filter(r -> r.getUserId() > 1).collect(Collectors.toList());
+        List<User> collect = users.stream().filter(r -> r.getUserId() > 1).sorted(Comparator.comparing(User::getUsername)).collect(Collectors.toList());
         return Result.successResult(collect);
     }
 }
