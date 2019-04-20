@@ -2,12 +2,15 @@ package cn.willon.pcms.pcmsmidware.service;
 
 import cn.willon.pcms.pcmsmidware.domain.bean.User;
 import cn.willon.pcms.pcmsmidware.domain.bo.UserChangeDO;
+import cn.willon.pcms.pcmsmidware.domain.constrains.UserPositionEnum;
 import cn.willon.pcms.pcmsmidware.mapper.UserMapper;
 import cn.willon.pcms.pcmsmidware.service.rollback.UserServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -52,5 +55,22 @@ public class UserService {
     public String findUsernameByUserId(Integer userId) {
         String realName = userMapper.findByUserId(userId).getRealName();
         return realName;
+    }
+
+    public User checkUser(User user) {
+        String username = user.getUsername();
+        String realName = user.getRealName();
+        String password = user.getPassword();
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(realName) || StringUtils.isEmpty(password)) {
+            return null;
+        }
+
+        int i = userMapper.checkUsername(username);
+        if (i > 0) {
+            return null;
+        }
+        user.setPosition(UserPositionEnum.DEVELOPER.getType());
+        userMapper.save(user);
+        return user;
     }
 }

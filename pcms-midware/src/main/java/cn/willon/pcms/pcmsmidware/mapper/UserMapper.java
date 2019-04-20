@@ -30,4 +30,6 @@ public interface UserMapper {
     void deleteUserChange(Integer changeId);
 
     User findByUsernamePassword(User user);
+
+    int checkUsername(String username);
 }

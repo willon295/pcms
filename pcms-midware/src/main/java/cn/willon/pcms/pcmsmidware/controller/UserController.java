@@ -49,4 +49,19 @@ public class UserController {
         return Result.successResult(exists);
     }
 
+
+    /**
+     * 注册
+     *
+     * @param user
+     * @return
+     */
+    @PostMapping("/user/register")
+    public Result register(@RequestBody User user) {
+        User valid = userService.checkUser(user);
+        if (valid != null) {
+            return Result.successResult(valid);
+        }
+        return Result.failResult("信息不合法");
+    }
 }

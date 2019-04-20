@@ -87,4 +87,9 @@
         from user where username=#{username} and password=#{password};
     </select>
 
+    <select id="checkUsername" resultType="java.lang.Integer">
+        select count(1)
+        from user where username=#{username} limit 1;
+    </select>
+
 </mapper>
