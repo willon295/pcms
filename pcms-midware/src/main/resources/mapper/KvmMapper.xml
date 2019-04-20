@@ -181,5 +181,10 @@
         from project
         where project_name = #{hostname};
     </select>
+    <select id="findPublishServerIpByHostname" resultType="java.lang.String">
+        select server_ip
+        from project
+        where project_name = #{hostname};
 
+    </select>
 </mapper>

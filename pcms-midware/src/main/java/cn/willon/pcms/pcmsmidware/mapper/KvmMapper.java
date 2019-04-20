@@ -77,4 +77,6 @@ public interface KvmMapper {
     Integer findKvmIdByProjectId(int projectId);
 
     Integer findPublishProjectIdByHostname(String hostname);
+
+    String findPublishServerIpByHostname(String hostname);
 }

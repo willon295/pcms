@@ -249,4 +249,8 @@ public class KvmService {
     public Integer findPublishProjectIdByHostname(String hostname) {
         return kvmMapper.findPublishProjectIdByHostname(hostname);
     }
+
+    public String findPublishServerIpByHostname(String hostname) {
+        return kvmMapper.findPublishServerIpByHostname(hostname);
+    }
 }

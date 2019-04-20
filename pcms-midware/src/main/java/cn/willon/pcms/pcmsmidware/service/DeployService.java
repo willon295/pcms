@@ -22,7 +22,7 @@ public class DeployService {
 
     private static final Integer TOMCAT_PORT = 8080;
     private static final String MASTER = "master";
-    private static final int TIMEOUT = 10;
+    private static final int TIMEOUT = 100000;
     @Resource
     DeployBashExecutor deployBashExecutor;
 
@@ -38,50 +38,63 @@ public class DeployService {
      * 部署
      */
     public boolean deploy(DeployCondition condition) {
-        String hostname = condition.getHostname();
+
         String branchName = condition.getBranchName();
+        if (MASTER.equals(branchName)) {
+            return deployPublish(condition);
+        } else {
+            return deployDev(condition);
+        }
+
+    }
+
+
+    private boolean deployDev(DeployCondition condition) {
+        String branchName = condition.getBranchName();
+        String hostname = condition.getHostname();
         Kvm kvm = kvmService.findByHostname(hostname);
         Integer kvmId = kvm.getKvmId();
-        Integer changeId = kvm.getChangeId();
-        Integer projectId = kvm.getProjectId();
         String projectName = kvm.getProjectName();
-        String ip;
-        if (MASTER.equals(branchName)) {
-            ip = changeService.getPublishProjectIp(changeId, projectId);
-        } else {
-            ip = kvm.getIp();
-        }
+        String ip = kvm.getIp();
         // 远程拷贝并且部署App
         try {
             deployBashExecutor.deploy(projectName, branchName, ip);
         } catch (Exception e) {
-            if (MASTER.equals(branchName)) {
-                changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.DEPLOY_FAIL.getStatus());
-            } else {
-                kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOY_FAIL.getStatus());
-            }
+            kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOY_FAIL.getStatus());
             return false;
         }
-
         // 检查是否有部署成功
-        boolean run = ServerUtil.isReachable(ip, TOMCAT_PORT, 10000);
-
+        boolean run = ServerUtil.isReachable(ip, TOMCAT_PORT, TIMEOUT);
         if (run) {
-            if (MASTER.equals(branchName)) {
-                changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.RUNNING.getStatus());
-            } else {
-                kvmService.updateDevStatus(kvmId, DevStatusEnums.RUNNING.getStatus());
-            }
+            kvmService.updateDevStatus(kvmId, DevStatusEnums.RUNNING.getStatus());
             return true;
         } else {
-            if (MASTER.equals(branchName)) {
-                changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.DEPLOY_FAIL.getStatus());
-            } else {
-                kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOY_FAIL.getStatus());
-            }
-
+            kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOY_FAIL.getStatus());
             return false;
         }
     }
 
+    private boolean deployPublish(DeployCondition condition) {
+        String hostname = condition.getHostname();
+        Integer changeId = condition.getChangeId();
+        String branchName = condition.getBranchName();
+        Integer projectId = kvmService.findPublishProjectIdByHostname(hostname);
+        String ip = kvmService.findPublishServerIpByHostname(hostname);
+        try {
+            deployBashExecutor.deploy(hostname, branchName, ip);
+        } catch (Exception e) {
+            changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.DEPLOY_FAIL.getStatus());
+            return false;
+        }
+        // 检查是否有部署成功
+        boolean run = ServerUtil.isReachable(ip, TOMCAT_PORT, TIMEOUT);
+        if (run) {
+            changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.RUNNING.getStatus());
+            return true;
+        } else {
+
+            changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.DEPLOY_FAIL.getStatus());
+            return false;
+        }
+    }
 }
