@@ -245,4 +245,8 @@ public class KvmService {
         }
 
     }
+
+    public Integer findPublishProjectIdByHostname(String hostname) {
+        return kvmMapper.findPublishProjectIdByHostname(hostname);
+    }
 }

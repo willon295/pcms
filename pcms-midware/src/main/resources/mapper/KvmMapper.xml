@@ -175,4 +175,11 @@
         where project_id = #{projectId};
     </select>
 
+
+    <select id="findPublishProjectIdByHostname" resultType="java.lang.Integer">
+        select project_id
+        from project
+        where project_name = #{hostname};
+    </select>
+
 </mapper>

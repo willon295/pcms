@@ -82,11 +82,12 @@ public class PackService {
 
 
     private void packPub(DeployCondition condition) throws IOException {
+
+        // 主机名 + master
         String hostname = condition.getHostname();
         String branchName = condition.getBranchName();
-        Kvm kvm = kvmService.findByHostname(hostname);
-        Integer changeId = kvm.getChangeId();
-        Integer projectId = kvm.getProjectId();
+        Integer projectId = kvmService.findPublishProjectIdByHostname(hostname);
+        Integer changeId = condition.getChangeId();
         GitlabProject project = gitlabAPI.getProject(projectId);
         String projectName = project.getName();
         String sshUrl = project.getSshUrl();

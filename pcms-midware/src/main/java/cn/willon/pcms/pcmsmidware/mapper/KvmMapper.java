@@ -75,4 +75,6 @@ public interface KvmMapper {
     List<Kvm> findHasPermissionKvm(QueryHasPermissionKvmCondition condition);
 
     Integer findKvmIdByProjectId(int projectId);
+
+    Integer findPublishProjectIdByHostname(String hostname);
 }
