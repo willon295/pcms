@@ -4,7 +4,6 @@ import cn.willon.pcms.pcmsmidware.domain.bean.User;
 import cn.willon.pcms.pcmsmidware.domain.bo.UserChangeDO;
 import cn.willon.pcms.pcmsmidware.service.UserService;
 import cn.willon.pcms.pcmsmidware.util.Result;
-import com.sun.org.apache.xml.internal.utils.StringComparable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
