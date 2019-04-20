@@ -63,11 +63,6 @@ public class DeployService {
             kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOY_FAIL.getStatus());
             return false;
         }
-        try {
-            Thread.sleep(TIMEOUT);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         // 检查是否有部署成功
         boolean run = ServerUtil.isReachable(ip, TOMCAT_PORT, TIMEOUT);
         if (run) {
@@ -92,11 +87,7 @@ public class DeployService {
             return false;
         }
         // 检查是否有部署成功
-        try {
-            Thread.sleep(TIMEOUT);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         boolean run = ServerUtil.isReachable(ip, TOMCAT_PORT, TIMEOUT);
         if (run) {
             changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.RUNNING.getStatus());

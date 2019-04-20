@@ -18,6 +18,7 @@ import cn.willon.pcms.pcmsmidware.service.GitlabService;
 import cn.willon.pcms.pcmsmidware.service.KvmService;
 import cn.willon.pcms.pcmsmidware.service.UserService;
 import cn.willon.pcms.pcmsmidware.util.Result;
+import cn.willon.pcms.pcmsmidware.util.ServerUtil;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -46,6 +47,8 @@ public class ChangeController {
 
 
     public static final String SUCCESS = "success";
+    public static final int PORT = 8080;
+    public static final int TIMEOUT = 10;
     @Resource
     private ChangeService changeService;
 
@@ -163,6 +166,12 @@ public class ChangeController {
         List<KvmVO> all = kvms.stream().map(k -> {
             KvmVO kv = new KvmVO();
             BeanUtils.copyProperties(k, kv);
+            // 检查运行状态
+            boolean reachable = ServerUtil.isReachable(k.getIp(), PORT, TIMEOUT);
+            if (reachable) {
+                changeService.updateProjectStatus(changeId, k.getProjectId(), DevStatusEnums.RUNNING.getStatus());
+                kv.setDevStatus(DevStatusEnums.RUNNING.getStatus());
+            }
             if (map.containsKey(k.getKvmId())) {
                 kv.setPermission("all");
             } else {
@@ -217,6 +226,11 @@ public class ChangeController {
             serverVO.setProjectName(projectName);
             serverVO.setServerIp(p.getServerIp());
             serverVO.setPubStatus(p.getPubStatus());
+            boolean reachable = ServerUtil.isReachable(p.getServerIp(), PORT, TIMEOUT);
+            if (reachable) {
+                changeService.updateProjectStatus(changeId, p.getProjectId(), PubStatusEnums.RUNNING.getStatus());
+                serverVO.setPubStatus(PubStatusEnums.RUNNING.getStatus());
+            }
             if (!changeService.hasProjectPublishPermission(p.getProjectId(), changeId)) {
                 serverVO.setPubStatus(PubStatusEnums.PENDING.getStatus());
             }

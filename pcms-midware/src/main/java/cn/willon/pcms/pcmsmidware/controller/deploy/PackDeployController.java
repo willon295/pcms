@@ -5,7 +5,10 @@ import cn.willon.pcms.pcmsmidware.service.DeployService;
 import cn.willon.pcms.pcmsmidware.service.PackService;
 import cn.willon.pcms.pcmsmidware.util.Result;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -35,15 +38,11 @@ public class PackDeployController {
     public Result deploy(@RequestBody DeployCondition deployCondition) {
 
         boolean pack = packService.pack(deployCondition);
-        boolean deploySuccess = false;
         if (pack) {
-            deploySuccess = deployService.deploy(deployCondition);
+            deployService.deploy(deployCondition);
         }
-        if (deploySuccess) {
-            return Result.successResult("success");
-        } else {
-            return Result.failResult("fail");
-        }
+        return Result.successResult("success");
+
 
     }
 }
