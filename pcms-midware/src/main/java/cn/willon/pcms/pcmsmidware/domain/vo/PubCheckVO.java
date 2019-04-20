@@ -26,7 +26,7 @@ public class PubCheckVO implements Serializable {
     private String checkChangeName;
 
 
-    private Integer checkProjectName;
+    private String checkProjectName;
     /**
      * 审核状态：{-1： 待审核，0：审核不通过，1：审核通过 }
      **/

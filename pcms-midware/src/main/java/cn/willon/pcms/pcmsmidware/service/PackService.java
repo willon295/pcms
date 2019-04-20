@@ -36,6 +36,8 @@ public class PackService {
     KvmService kvmService;
 
     @Resource
+    UserService userService;
+    @Resource
     GitlabAPI gitlabAPI;
 
     @Resource

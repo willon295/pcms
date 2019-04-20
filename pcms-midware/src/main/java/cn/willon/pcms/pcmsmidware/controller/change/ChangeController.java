@@ -7,9 +7,10 @@ import cn.willon.pcms.pcmsmidware.domain.bean.Project;
 import cn.willon.pcms.pcmsmidware.domain.bean.PubCheck;
 import cn.willon.pcms.pcmsmidware.domain.bo.ChangeKvmsDO;
 import cn.willon.pcms.pcmsmidware.domain.bo.ProjectDO;
-import cn.willon.pcms.pcmsmidware.domain.dto.UpdateChangeDto;
 import cn.willon.pcms.pcmsmidware.domain.constrains.DevStatusEnums;
+import cn.willon.pcms.pcmsmidware.domain.constrains.PubStatusEnums;
 import cn.willon.pcms.pcmsmidware.domain.dto.SaveChangeDto;
+import cn.willon.pcms.pcmsmidware.domain.dto.UpdateChangeDto;
 import cn.willon.pcms.pcmsmidware.domain.dto.UpdateKvmDto;
 import cn.willon.pcms.pcmsmidware.domain.vo.*;
 import cn.willon.pcms.pcmsmidware.service.ChangeService;
@@ -17,7 +18,6 @@ import cn.willon.pcms.pcmsmidware.service.GitlabService;
 import cn.willon.pcms.pcmsmidware.service.KvmService;
 import cn.willon.pcms.pcmsmidware.service.UserService;
 import cn.willon.pcms.pcmsmidware.util.Result;
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -209,12 +209,17 @@ public class ChangeController {
         Map<String, Kvm> hasPermissionMap = hasPermissionKvms.stream().collect(Collectors.toMap(Kvm::getProjectName, k -> k));
 
         List<ServerVO> servers = changeAllProjects.stream().map(p -> {
+            // 当前变更， 是否可以操作、当前工程
+
             String projectName = p.getProjectName();
             ServerVO serverVO = new ServerVO();
             serverVO.setProjectId(p.getProjectId());
             serverVO.setProjectName(projectName);
             serverVO.setServerIp(p.getServerIp());
             serverVO.setPubStatus(p.getPubStatus());
+            if (!changeService.hasProjectPublishPermission(p.getProjectId(), changeId)) {
+                serverVO.setPubStatus(PubStatusEnums.PENDING.getStatus());
+            }
             if (hasPermissionMap.containsKey(projectName)) {
                 serverVO.setPermission("all");
             } else {
@@ -240,12 +245,11 @@ public class ChangeController {
             re.setCheckChangeId(checkChangeId);
             re.setCheckChangeName(checkChangeName);
             re.setCheckStatus(r.getCheckStatus());
+            re.setCheckProjectName(r.getCheckProjectName());
             return re;
 
         }).collect(Collectors.toList());
         publishVO.setReceives(receiveVOs);
-
-
         // 获取我发起的申请
         List<PubCheck> sends = changeService.findMySendPubChecks(changeId, userId);
         List<PubCheckVO> sendVOs = sends.stream().map(s -> {
@@ -256,6 +260,7 @@ public class ChangeController {
             re.setCheckChangeId(s.getCheckChangeId());
             re.setCheckChangeName(changeService.findChangeNameByChangeId(s.getCheckChangeId()));
             re.setCheckStatus(s.getCheckStatus());
+            re.setCheckProjectName(s.getCheckProjectName());
             return re;
         }).collect(Collectors.toList());
         publishVO.setSends(sendVOs);
