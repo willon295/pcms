@@ -278,7 +278,7 @@ public class ChangeController {
     /**
      * 拒绝线上工程审核
      */
-    @DeleteMapping("/check/{checkId}")
+    @PutMapping("/check/{checkId}")
     public void denyPubCheck(@PathVariable Integer checkId) {
         changeService.denyPubcheck(checkId);
     }
