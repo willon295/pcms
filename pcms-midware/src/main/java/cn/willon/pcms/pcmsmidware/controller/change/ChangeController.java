@@ -169,7 +169,7 @@ public class ChangeController {
             // 检查运行状态
             boolean reachable = ServerUtil.isReachable(k.getIp(), PORT, TIMEOUT);
             if (reachable) {
-                changeService.updateProjectStatus(changeId, k.getProjectId(), DevStatusEnums.RUNNING.getStatus());
+                kvmService.updateDevStatus(k.getKvmId(), DevStatusEnums.RUNNING.getStatus());
                 kv.setDevStatus(DevStatusEnums.RUNNING.getStatus());
             }
             if (map.containsKey(k.getKvmId())) {
