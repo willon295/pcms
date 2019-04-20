@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * UserController
@@ -70,6 +71,7 @@ public class UserController {
     @GetMapping("/users")
     public Result users() {
         List<User> users = userService.findAll();
-        return Result.successResult(users);
+        List<User> collect = users.stream().filter(r -> r.getUserId() > 1).collect(Collectors.toList());
+        return Result.successResult(collect);
     }
 }
