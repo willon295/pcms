@@ -169,8 +169,10 @@ public class ChangeController {
             // 检查运行状态
             boolean reachable = ServerUtil.isReachable(k.getIp(), PORT, TIMEOUT);
             if (reachable) {
-                kvmService.updateDevStatus(k.getKvmId(), DevStatusEnums.RUNNING.getStatus());
-                kv.setDevStatus(DevStatusEnums.RUNNING.getStatus());
+                if (k.getDevStatus().equals(DevStatusEnums.DEPLOY_FAIL.getStatus())){
+                    kvmService.updateDevStatus(k.getKvmId(), DevStatusEnums.RUNNING.getStatus());
+                    kv.setDevStatus(DevStatusEnums.RUNNING.getStatus());
+                }
             }
             if (map.containsKey(k.getKvmId())) {
                 kv.setPermission("all");
@@ -228,8 +230,10 @@ public class ChangeController {
             serverVO.setPubStatus(p.getPubStatus());
             boolean reachable = ServerUtil.isReachable(p.getServerIp(), PORT, TIMEOUT);
             if (reachable) {
-                changeService.updateProjectStatus(changeId, p.getProjectId(), PubStatusEnums.RUNNING.getStatus());
-                serverVO.setPubStatus(PubStatusEnums.RUNNING.getStatus());
+                if (p.getPubStatus().equals(PubStatusEnums.DEPLOY_FAIL.getStatus())){
+                    changeService.updateProjectStatus(changeId, p.getProjectId(), PubStatusEnums.RUNNING.getStatus());
+                    serverVO.setPubStatus(PubStatusEnums.RUNNING.getStatus());
+                }
             }
             if (!changeService.hasProjectPublishPermission(p.getProjectId(), changeId)) {
                 serverVO.setPubStatus(PubStatusEnums.PENDING.getStatus());

@@ -69,7 +69,7 @@ public class DeployService {
             kvmService.updateDevStatus(kvmId, DevStatusEnums.RUNNING.getStatus());
             return true;
         } else {
-            kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOY_FAIL.getStatus());
+            kvmService.updateDevStatus(kvmId, DevStatusEnums.DEPLOYING.getStatus());
             return false;
         }
     }
@@ -93,7 +93,7 @@ public class DeployService {
             changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.RUNNING.getStatus());
             return true;
         } else {
-            changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.DEPLOY_FAIL.getStatus());
+            changeService.updateProjectStatus(changeId, projectId, PubStatusEnums.DEPLOYING.getStatus());
             return false;
         }
     }
