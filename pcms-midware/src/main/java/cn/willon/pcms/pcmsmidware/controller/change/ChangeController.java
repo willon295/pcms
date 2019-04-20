@@ -309,7 +309,7 @@ public class ChangeController {
     /**
      * 同意线上工程审核
      */
-    @PutMapping("/check/")
+    @PutMapping("/check")
     public void accessPubCheck(@RequestBody AccessCheckCondition condition) {
         Integer checkId = condition.getCheckId();
         Integer changeId = condition.getChangeId();
