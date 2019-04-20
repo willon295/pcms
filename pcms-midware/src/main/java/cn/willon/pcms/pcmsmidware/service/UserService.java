@@ -73,4 +73,8 @@ public class UserService {
         userMapper.save(user);
         return user;
     }
+
+    public List<User> findAll() {
+        return userMapper.findAll();
+    }
 }

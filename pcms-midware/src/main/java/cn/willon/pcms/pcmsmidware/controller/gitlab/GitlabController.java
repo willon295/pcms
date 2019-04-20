@@ -24,7 +24,7 @@ public class GitlabController {
     private GitlabService gitlabService;
 
 
-    @GetMapping("/users")
+    @GetMapping("/gitlab/users")
     public Result users() {
         try {
             return Result.successResult(gitlabService.findAllUser());

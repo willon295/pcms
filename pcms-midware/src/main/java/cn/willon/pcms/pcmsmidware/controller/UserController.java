@@ -7,6 +7,7 @@ import cn.willon.pcms.pcmsmidware.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -63,5 +64,12 @@ public class UserController {
             return Result.successResult(valid);
         }
         return Result.failResult("信息不合法");
+    }
+
+
+    @GetMapping("/users")
+    public Result users() {
+        List<User> users = userService.findAll();
+        return Result.successResult(users);
     }
 }
