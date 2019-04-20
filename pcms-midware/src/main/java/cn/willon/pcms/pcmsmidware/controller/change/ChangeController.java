@@ -169,7 +169,7 @@ public class ChangeController {
             // 检查运行状态
             boolean reachable = ServerUtil.isReachable(k.getIp(), PORT, TIMEOUT);
             if (reachable) {
-                if (k.getDevStatus().equals(DevStatusEnums.DEPLOY_FAIL.getStatus())){
+                if (k.getDevStatus()<DevStatusEnums.RUNNING.getStatus()){
                     kvmService.updateDevStatus(k.getKvmId(), DevStatusEnums.RUNNING.getStatus());
                     kv.setDevStatus(DevStatusEnums.RUNNING.getStatus());
                 }
@@ -230,7 +230,7 @@ public class ChangeController {
             serverVO.setPubStatus(p.getPubStatus());
             boolean reachable = ServerUtil.isReachable(p.getServerIp(), PORT, TIMEOUT);
             if (reachable) {
-                if (p.getPubStatus().equals(PubStatusEnums.DEPLOY_FAIL.getStatus())){
+                if (p.getPubStatus()<PubStatusEnums.RUNNING.getStatus()){
                     changeService.updateProjectStatus(changeId, p.getProjectId(), PubStatusEnums.RUNNING.getStatus());
                     serverVO.setPubStatus(PubStatusEnums.RUNNING.getStatus());
                 }
