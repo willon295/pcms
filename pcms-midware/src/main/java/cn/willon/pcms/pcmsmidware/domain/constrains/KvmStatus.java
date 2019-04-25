@@ -8,6 +8,8 @@ package cn.willon.pcms.pcmsmidware.domain.constrains;
  */
 public interface KvmStatus {
 
+
+    int UNKNOW=-1;
     /**
      * 关机状态
      */

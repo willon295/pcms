@@ -1,11 +1,13 @@
 package cn.willon.pcms.pcmsmidware.executor;
 
+import cn.willon.pcms.pcmsmidware.domain.constrains.KvmStatus;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -33,6 +35,8 @@ public class KvmBashExecutor {
     @Value("${kvm.cmd.start}")
     private String startCmd;
 
+    @Value("${kvm.cmd.status}")
+    private String status;
 
     private boolean exec(String cmd, String hostname) {
         ArrayList<String> cmds = new ArrayList<>();
@@ -91,4 +95,33 @@ public class KvmBashExecutor {
         return exec(startCmd, hostname);
     }
 
+    public Integer checkKvmStatus(String hostname) {
+
+        ArrayList<String> cmds = new ArrayList<>();
+        cmds.add("sh");
+        cmds.add("-c");
+        cmds.add(kvmShell + " " + status + " " + hostname);
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command(cmds);
+        try {
+            Process process = processBuilder.start();
+            InputStream in = process.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            String s = reader.readLine().trim();
+            if (StringUtils.isEmpty(s)) {
+                return KvmStatus.UNKNOW;
+            }
+            int status = Integer.parseInt(s);
+            if (KvmStatus.DOWN == status) {
+                return KvmStatus.DOWN;
+            }
+            if (KvmStatus.UP == status) {
+                return KvmStatus.UP;
+            }
+        } catch (IOException e) {
+            log.error(String.format("执行命令错误: {cmd: %s}", JSON.toJSONString(cmds)));
+            return KvmStatus.UNKNOW;
+        }
+        return KvmStatus.UNKNOW;
+    }
 }

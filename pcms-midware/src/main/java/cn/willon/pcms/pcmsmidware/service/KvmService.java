@@ -253,4 +253,15 @@ public class KvmService {
     public String findPublishServerIpByHostname(String hostname) {
         return kvmMapper.findPublishServerIpByHostname(hostname);
     }
+
+    /**
+     * 检查kvm状态
+     *
+     * @param hostname 主机名
+     * @return kvm状态
+     */
+    public Integer checkKvmStatus(String hostname) {
+        Integer status = kvmBashExecutor.checkKvmStatus(hostname);
+        return status;
+    }
 }

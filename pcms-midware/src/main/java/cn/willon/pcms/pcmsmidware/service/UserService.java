@@ -1,8 +1,10 @@
 package cn.willon.pcms.pcmsmidware.service;
 
+import cn.willon.pcms.pcmsmidware.domain.bean.Kvm;
 import cn.willon.pcms.pcmsmidware.domain.bean.User;
 import cn.willon.pcms.pcmsmidware.domain.bo.UserChangeDO;
 import cn.willon.pcms.pcmsmidware.domain.constrains.UserPositionEnum;
+import cn.willon.pcms.pcmsmidware.mapper.KvmMapper;
 import cn.willon.pcms.pcmsmidware.mapper.UserMapper;
 import cn.willon.pcms.pcmsmidware.service.rollback.UserServiceException;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,9 @@ public class UserService {
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private KvmMapper kvmMapper;
 
     /**
      * 查找用户变更，且查找出适用与首页
@@ -76,5 +81,11 @@ public class UserService {
 
     public List<User> findAll() {
         return userMapper.findAll();
+    }
+
+    public List<Kvm> findUserKvms(Integer userId) {
+
+        List<Kvm> kvms = kvmMapper.findAllUserKvms(userId);
+        return kvms;
     }
 }

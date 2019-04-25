@@ -185,6 +185,12 @@
         select server_ip
         from project
         where project_name = #{hostname};
+    </select>
 
+    <select id="findAllUserKvms" resultMap="allColKvmResultMap">
+        select k.kvm_id,k.hostname,k.ip
+        from kvm k
+                 left join user_kvm uk on k.kvm_id = uk.kvm_id
+        where uk.user_id=#{userId};
     </select>
 </mapper>

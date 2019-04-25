@@ -23,4 +23,9 @@ public class KvmVO implements Serializable {
     private String createDate;
     private String expireDate;
     private String permission;
+    /**
+     * 虚拟机运行状态
+     * @see cn.willon.pcms.pcmsmidware.domain.constrains.KvmStatus
+     */
+    private Integer status;
 }

@@ -79,4 +79,12 @@ public interface KvmMapper {
     Integer findPublishProjectIdByHostname(String hostname);
 
     String findPublishServerIpByHostname(String hostname);
+
+    /**
+     * 查找所有用户的KVM
+     *
+     * @param userId 用户id
+     * @return kvm列表
+     */
+    List<Kvm> findAllUserKvms(Integer userId);
 }
