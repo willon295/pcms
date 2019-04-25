@@ -17,6 +17,7 @@ import cn.willon.pcms.pcmsmidware.service.ChangeService;
 import cn.willon.pcms.pcmsmidware.service.GitlabService;
 import cn.willon.pcms.pcmsmidware.service.KvmService;
 import cn.willon.pcms.pcmsmidware.service.UserService;
+import cn.willon.pcms.pcmsmidware.util.DateUtil;
 import cn.willon.pcms.pcmsmidware.util.Result;
 import cn.willon.pcms.pcmsmidware.util.ServerUtil;
 import com.google.common.collect.Lists;
@@ -132,7 +133,9 @@ public class ChangeController {
 
         Instant expireInstant = Instant.ofEpochMilli(change.getExpireDate());
         LocalDateTime t2 = LocalDateTime.ofInstant(expireInstant, ZoneId.systemDefault());
-        String expireDate = String.format("%s-%s-%s", t2.getYear(), t2.getMonthValue(), t2.getDayOfMonth());
+        String monthValue = String.valueOf(t2.getMonthValue());
+        String dayOfMonth = String.valueOf(t2.getDayOfMonth());
+        String expireDate = String.format("%s-%s-%s", t2.getYear(), DateUtil.get(monthValue), DateUtil.get(dayOfMonth));
 
         changeVO.setCreateDate(createDate);
         changeVO.setExpireDate(expireDate);
@@ -169,7 +172,7 @@ public class ChangeController {
             // 检查运行状态
             boolean reachable = ServerUtil.isReachable(k.getIp(), PORT, TIMEOUT);
             if (reachable) {
-                if (k.getDevStatus()<DevStatusEnums.RUNNING.getStatus()){
+                if (k.getDevStatus() < DevStatusEnums.RUNNING.getStatus()) {
                     kvmService.updateDevStatus(k.getKvmId(), DevStatusEnums.RUNNING.getStatus());
                     kv.setDevStatus(DevStatusEnums.RUNNING.getStatus());
                 }
@@ -230,7 +233,7 @@ public class ChangeController {
             serverVO.setPubStatus(p.getPubStatus());
             boolean reachable = ServerUtil.isReachable(p.getServerIp(), PORT, TIMEOUT);
             if (reachable) {
-                if (p.getPubStatus()<PubStatusEnums.RUNNING.getStatus()){
+                if (p.getPubStatus() < PubStatusEnums.RUNNING.getStatus()) {
                     changeService.updateProjectStatus(changeId, p.getProjectId(), PubStatusEnums.RUNNING.getStatus());
                     serverVO.setPubStatus(PubStatusEnums.RUNNING.getStatus());
                 }

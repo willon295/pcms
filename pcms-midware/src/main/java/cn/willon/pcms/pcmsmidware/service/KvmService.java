@@ -218,7 +218,7 @@ public class KvmService {
                 newKVM.setCreateDate(System.currentTimeMillis());
                 String endDate = dto.getExpireDate();
                 endDate += " 00:00:00";
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:ss:mm");
                 LocalDateTime dateTime = LocalDateTime.parse(endDate, formatter);
                 Instant instant = dateTime.toInstant(ZoneOffset.UTC);
                 long endTime = instant.toEpochMilli();
