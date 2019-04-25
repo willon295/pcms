@@ -198,7 +198,7 @@ public class KvmService {
                 Kvm kvmWithUser = kvmMapper.findKvmWithUser(kvmId);
                 List<Integer> originUsers = kvmWithUser.getUsers().stream().map(KvmUser::getUserId).collect(Collectors.toList());
                 newUsers.removeAll(originUsers);
-                log.info("工程新增用户: {kvmId: %s ,users: %s}", kvmId, JSON.toJSONString(newUsers));
+                log.info(String.format("工程新增用户: {kvmId: %s ,users: %s}", kvmId, JSON.toJSONString(newUsers)));
                 newUsers.forEach(uid -> {
                     SaveUserKvmCondition saveUserKvmCondition = new SaveUserKvmCondition();
                     saveUserKvmCondition.setUserId(uid);
@@ -224,7 +224,7 @@ public class KvmService {
                 long endTime = instant.toEpochMilli();
                 newKVM.setExpireDate(endTime);
                 newKVM.setChangeId(dto.getChangeId());
-                kvmMapper.save(kvm);
+                kvmMapper.save(newKVM);
                 newUsers.forEach(u -> {
                     SaveUserKvmCondition saveUserKvmCondition = new SaveUserKvmCondition();
                     saveUserKvmCondition.setUserId(u);
