@@ -85,6 +85,8 @@ public class PackService {
 
         // 主机名 + master
         String hostname = condition.getHostname();
+
+        //分支位master
         String branchName = condition.getBranchName();
         Integer projectId = kvmService.findPublishProjectIdByHostname(hostname);
         Integer changeId = condition.getChangeId();

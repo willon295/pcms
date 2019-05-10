@@ -20,6 +20,7 @@ public class PublishVO implements Serializable {
      */
     private Integer changeId;
     private String changeName;
+    private String branchName;
 
     /**
      * 服务器相关

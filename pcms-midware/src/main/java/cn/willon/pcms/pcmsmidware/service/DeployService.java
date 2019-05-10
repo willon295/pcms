@@ -21,7 +21,7 @@ public class DeployService {
 
 
     private static final Integer TOMCAT_PORT = 8080;
-    private static final String MASTER = "master";
+    private static final String PUBLISH = "publish";
     private static final int TIMEOUT = 10000;
     @Resource
     DeployBashExecutor deployBashExecutor;
@@ -39,8 +39,8 @@ public class DeployService {
      */
     public boolean deploy(DeployCondition condition) {
 
-        String branchName = condition.getBranchName();
-        if (MASTER.equals(branchName)) {
+        String env = condition.getEnv();
+        if (PUBLISH.equals(env)) {
             return deployPublish(condition);
         } else {
             return deployDev(condition);

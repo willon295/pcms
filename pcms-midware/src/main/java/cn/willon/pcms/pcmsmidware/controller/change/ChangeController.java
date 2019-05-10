@@ -26,6 +26,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -285,7 +286,8 @@ public class ChangeController {
             return re;
         }).collect(Collectors.toList());
         publishVO.setSends(sendVOs);
-
+        String branchName = changeKvmsDO.getChange().getBranchName();
+        publishVO.setBranchName(branchName);
         return Result.successResult(publishVO);
     }
 
